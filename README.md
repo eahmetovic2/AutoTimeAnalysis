@@ -1,1 +1,1 @@
-# ERP Blazor Webassembly
+# ISEA Blazor Webassembly

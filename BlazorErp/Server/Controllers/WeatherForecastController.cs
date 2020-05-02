@@ -5,6 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+using BlazorErp.Shared.Request.Korisnik;
+using Microsoft.AspNetCore.Identity;
+using BlazorErp.Shared.Result.Korisnik;
 
 namespace BlazorErp.Server.Controllers
 {
@@ -19,7 +23,7 @@ namespace BlazorErp.Server.Controllers
 
         private readonly ILogger<WeatherForecastController> logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, UserManager<IdentityUser> userManager)
         {
             this.logger = logger;
         }

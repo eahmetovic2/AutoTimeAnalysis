@@ -1,4 +1,5 @@
-using BlazorErp.Server.Data;
+using BlazorErp.Server.Config;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -7,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
 using System.Linq;
+using System.Text;
 
 namespace BlazorErp.Server
 {
@@ -25,11 +28,28 @@ namespace BlazorErp.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<IdentityContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
+            IdentityConfig.ConfigureServices(services, Configuration);
+            DataConfig.ConfigureServices(services, Configuration);
 
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<IdentityContext>();
+            //services.AddDbContext<IdentityContext>(options =>
+            //        options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
+
+            //services.AddDefaultIdentity<IdentityUser>()
+            //    .AddEntityFrameworkStores<IdentityContext>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["JwtIssuer"],
+                        ValidAudience = Configuration["JwtAudience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtSecurityKey"]))
+                    };
+                });
 
             services.AddMvc().AddNewtonsoftJson();
             services.AddResponseCompression(opts =>
@@ -54,6 +74,9 @@ namespace BlazorErp.Server
             app.UseClientSideBlazorFiles<Client.Startup>();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
