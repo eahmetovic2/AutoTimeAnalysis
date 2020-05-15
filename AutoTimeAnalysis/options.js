@@ -13,3 +13,37 @@ function constructOptions(kButtonColors) {
   }
 }
 constructOptions(kButtonColors);
+
+
+
+
+let recordingsTable = document.getElementById('recordingsTable');
+
+function displayRecordings(allRecordings) {  
+  let headerRow = document.createElement('tr');
+  let headerItem = document.createElement('td');
+  headerItem.innerHTML = "Item";
+  let headerTime = document.createElement('td');
+  headerTime.innerHTML = "Time";
+  headerRow.appendChild(headerItem);
+  headerRow.appendChild(headerTime);
+  recordingsTable.appendChild(headerRow);
+
+  for (let item of allRecordings) {
+    let tableRow = document.createElement('tr');
+
+    let tableDataItem = document.createElement('td');
+    tableDataItem.innerHTML = item.name;
+    tableRow.appendChild(tableDataItem);
+
+    let tableDataTime = document.createElement('td');
+    tableDataTime.innerHTML = item.time;
+    tableRow.appendChild(tableDataTime);
+
+    recordingsTable.appendChild(tableRow);
+  }
+}
+
+chrome.storage.sync.get('recordingsList', function(data) {
+  displayRecordings(data.recordingsList)
+});

@@ -8,10 +8,9 @@
           outline: none;
         }
         .record {
-              padding: 0 !important;
-    border: none;
-    background-color: white;
-          background-image: url(images/Record-512.png);
+          padding: 0 !important;
+          border: none;
+          background-color: white;
           background-repeat: no-repeat;
           background-size: 35px 35px;
         }
@@ -19,9 +18,14 @@
     </head>
     <body>
       <div>
-        <button id="changeColor"></button>
         <button class="record" id="record"></button>
       </div>
+      <div>      
+        <p>All recordings</p>
+        <table id="recordingsTable"></table>
+      </div>
+
+
         <script src="popup.js"></script>
     </body>
   </html>
