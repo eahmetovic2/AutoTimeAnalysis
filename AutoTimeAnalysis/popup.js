@@ -66,6 +66,9 @@ recordBtn.onclick = function(element) {
 let recordingsTable = document.getElementById('recordingsTable');
 
 function showRecordinEvents(recording) {  
+  recording.items.forEach(item => {
+    item.datetime = new Date(item.time);
+  });
   console.log(recording);
 }
 
