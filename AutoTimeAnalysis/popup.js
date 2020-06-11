@@ -65,7 +65,7 @@ recordBtn.onclick = function(element) {
 //Recording data
 let recordingsTable = document.getElementById('recordingsTable');
 
-function showRecordinEvents(recording) {  
+function showRecordingEvents(recording) {  
   recording.items.forEach(item => {
     item.datetime = new Date(item.time);
   });
@@ -100,7 +100,7 @@ function displayRecordings(allRecordings) {
     playButton.style.backgroundImage = "url('images/play-solid45.png')";
     playButton.className = "record";
     playButton.addEventListener('click', function() {
-      showRecordinEvents(item);
+      PlayRecording(item);
     });
     tableDataActions.appendChild(playButton);
     tableRow.appendChild(tableDataActions);
@@ -112,3 +112,23 @@ function displayRecordings(allRecordings) {
 chrome.storage.sync.get('recordingsList', function(data) {
   displayRecordings(data.recordingsList)
 });
+
+
+function PlayRecording(recording) {
+  recording.items.forEach(item => {
+    item.datetime = new Date(item.time);
+  });
+  console.log(recording);
+  recording.items.forEach(item => {
+    if(item.event == "click") {
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {action: "simulate_click", value: item.value}, function(response) {
+          console.log(response.response);
+        });
+      });
+    }
+    else if(item.event == "keydown") {
+      console.log("keydown key: " + item.value.key)
+    }
+  });
+}

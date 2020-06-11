@@ -3,8 +3,11 @@ console.log("RECORD");
 
 // Ako je ukljuceno snimanje na pocetku
 chrome.storage.sync.get('recording', function(data) {  
-  document.addEventListener("click", logClickEvent);
-  document.addEventListener('keydown', logKeydownEvent);
+  if(data.recording) {
+    console.log("START RECORDING???", data)
+    document.addEventListener("click", logClickEvent);
+    document.addEventListener('keydown', logKeydownEvent);
+  }
 });
 
 //Event listeners
@@ -94,6 +97,12 @@ var logKeydownEvent = function(event) {
     });
 }
 
+var logScrollEvent = function(event) {
+  console.log("logScrollEvent", event);
+}
+
+
+var scrollableElements = ElementsWithScrolls();
 
 //document.addEventListener("click", logClickEvent);
 
@@ -106,6 +115,9 @@ chrome.runtime.onMessage.addListener(
       if (request.action == "start") {
         document.addEventListener("click", logClickEvent);
         document.addEventListener('keydown', logKeydownEvent);
+        scrollableElements.forEach((element, index) => {
+          element.addEventListener("scroll", logScrollEvent);
+        });
         chrome.storage.sync.set({currentEvents: []}, function() {
           console.log("Recordinglist updated.");
         });
@@ -115,12 +127,18 @@ chrome.runtime.onMessage.addListener(
       if (request.action == "continue") {
         document.addEventListener("click", logClickEvent);
         document.addEventListener('keydown', logKeydownEvent);
+        scrollableElements.forEach(element => {
+          element.addEventListener("scroll", logScrollEvent);
+        });
         sendResponse({response: "continued"});
       }
 
       else if (request.action == "stop") {
         document.removeEventListener("click", logClickEvent, false);
         document.removeEventListener('keydown', logKeydownEvent, false);
+        scrollableElements.forEach(element => {
+          element.removeEventListener("scroll", logScrollEvent, false);
+        });
 
           // Dodaj evente u listu
         chrome.storage.sync.get('recordingsList', function(data) {
@@ -145,5 +163,14 @@ chrome.runtime.onMessage.addListener(
         });
  
         sendResponse({response: "stopped"});
+      }
+
+      // SIMULATE RECORDINGS
+      else if(request.action == "simulate_click") {        
+        console.log("click on: " + request.value);    
+        var el = document.elementFromPoint(request.value.pageX, request.value.pageY);    
+        console.log("ELEMENT", el)
+        el.click();
+        sendResponse({response: "clicked on: " + request.value.targetId});
       }
     });
