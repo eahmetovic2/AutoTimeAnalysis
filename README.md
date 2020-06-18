@@ -8,3 +8,8 @@ AutoTimeAnalysis is a Chrome Extension that allows users to store and analyse a 
 * Click the LOAD UNPACKED button and select the extension directory.
 
 ## Usage example
+* Click on Record button to start recording
+* Execute actions on the web app where the recording is started
+* Click on Stop button to stop recording
+* Click on the Play button in the list of recording
+* Analyse the generated reports
