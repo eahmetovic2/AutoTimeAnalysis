@@ -1,6 +1,8 @@
 let recording = false;
 let recordBtn = document.getElementById('record');
 
+var ctx = document.getElementById('myChart').getContext('2d');
+
 chrome.storage.sync.get('recording', function(data) {
   console.log("DATA", data.recording)
   recording = data.recording;
@@ -100,7 +102,10 @@ function displayRecordings(allRecordings) {
     playButton.style.backgroundImage = "url('images/play-solid45.png')";
     playButton.className = "record";
     playButton.addEventListener('click', function() {
-      PlayRecording(item);
+      //PlayRecording(item);
+      chrome.runtime.openOptionsPage(function(a) {
+        console.log("Options opened.")
+      });
     });
     tableDataActions.appendChild(playButton);
     tableRow.appendChild(tableDataActions);
@@ -113,13 +118,28 @@ chrome.storage.sync.get('recordingsList', function(data) {
   displayRecordings(data.recordingsList)
 });
 
+function groupBy(collection, property) {
+  var i = 0, val, index,
+      values = [], result = [];
+  for (; i < collection.length; i++) {
+      val = collection[i][property];
+      index = values.indexOf(val);
+      if (index > -1)
+          result[index].items.push(collection[i]);
+      else {
+          values.push(val);
+          result.push({ event: val, items: [collection[i]]});
+      }
+  }
+  return { values: values, result: result};
+}
 
 function PlayRecording(recording) {
   recording.items.forEach(item => {
     item.datetime = new Date(item.time);
   });
   console.log(recording);
-  recording.items.forEach(item => {
+  /* recording.items.forEach(item => {
     if(item.event == "click") {
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, {action: "simulate_click", value: item.value}, function(response) {
@@ -130,5 +150,49 @@ function PlayRecording(recording) {
     else if(item.event == "keydown") {
       console.log("keydown key: " + item.value.key)
     }
+  }); */
+  var groupedEvents = groupBy(recording.items, "event");
+  console.log(groupedEvents);
+  var data = [];
+  groupedEvents.result.forEach(element => {
+    data.push(element.items.length);
   });
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: groupedEvents.values,
+        datasets: [{
+            label: '# of Events',
+            data: data,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
 }
+
+

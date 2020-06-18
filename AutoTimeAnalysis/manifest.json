@@ -4,10 +4,11 @@
     "description": "Tool for automatic time analysis of web site events",
     "options_page": "options.html",
     "permissions": ["activeTab", "declarativeContent", "storage"],
+    "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'",
     "content_scripts": [
       {
         "matches": ["<all_urls>"],
-        "js": ["date.js", "helpers.js", "recording.js"]
+        "js": ["jquery.min.js", "date.js", "helpers.js", "recording.js"]
       }
     ],
     "background": {

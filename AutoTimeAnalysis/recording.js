@@ -1,17 +1,72 @@
-
 console.log("RECORD");
 
 // Ako je ukljuceno snimanje na pocetku
 chrome.storage.sync.get('recording', function(data) {  
   if(data.recording) {
-    console.log("START RECORDING???", data)
-    document.addEventListener("click", logClickEvent);
-    document.addEventListener('keydown', logKeydownEvent);
+    //document.addEventListener("click", logClickEvent);
+    //document.addEventListener('keydown', logKeydownEvent);    
+    $(document.body).on("click mousedown mouseup focus blur keydown change", logEvent);
   }
 });
 
+var logEvent = function(event) {
+  var now = performance.now();
+    var eventDuration = now - event.timeStamp;
+    chrome.storage.sync.get('currentJQueryEvents', function(data) {
+      events = data.currentJQueryEvents;
+      events.push({ 
+        event: event.type, 
+        time: Date.now(),
+        duration: eventDuration,
+        targetId: event.target.id,
+        altKey: event.altKey,
+        button: event.button,
+        buttons: event.buttons,
+        clientX: event.clientX,
+        clientY: event.clientY,
+        ctrlKey: event.ctrlKey,
+        currentTarget: event.currentTarget,
+        fromElement: event.fromElement,
+        layerX: event.layerX,
+        layerY: event.layerY,
+        metaKey: event.metaKey,
+        movementX: event.movementX,
+        movementY: event.movementY,
+        offsetX: event.offsetX,
+        offsetY: event.offsetY,
+        pageX: event.pageX,
+        pageY: event.pageY,
+        path: event.path,
+        relatedTarget: event.relatedTarget,
+        returnValue: event.returnValue,
+        screenX: event.screenX,
+        screenY: event.screenY,
+        shiftKey: event.shiftKey,
+        srcElement: event.srcElement,
+        target: event.target,
+        timeStamp: event.timeStamp,
+        toElement: event.toElement,
+        which: event.which,
+        x: event.x,
+        y: event.y,
+        charCode: event.charCode,
+        code: event.code,
+        key: event.key,
+        keyCode: event.keyCode,
+        location: event.location,
+      });
+
+      chrome.storage.sync.set({currentJQueryEvents: events}, function() {
+        console.log("currentJQueryEvents updated.");
+      });
+    });
+}
+
+
 //Event listeners
 var logClickEvent = function(event) {
+  var now = performance.now();
+  var eventDuration = now - event.timeStamp;
   console.log("EVENT", event);
     console.log(event.target.id, event.target);
     chrome.storage.sync.get('currentEvents', function(data) {
@@ -52,6 +107,7 @@ var logClickEvent = function(event) {
           which: event.which,
           x: event.x,
           y: event.y,
+          eventDuration: eventDuration
         }
       });
 
@@ -63,6 +119,9 @@ var logClickEvent = function(event) {
     });
 }
 var logKeydownEvent = function(event) {
+  var now = performance.now();
+  var eventDuration = now - event.timeStamp;
+  console.log("EVENT", event);
     chrome.storage.sync.get('currentEvents', function(data) {
       console.log("currentEvents", data.currentEvents);
       clickEvents = data.currentEvents;
@@ -85,7 +144,8 @@ var logKeydownEvent = function(event) {
           target: event.target,
           which: event.which,
           path: event.path,
-          timestamp: event.timestamp
+          timestamp: event.timestamp,
+          eventDuration: eventDuration
         }
       });
 
@@ -113,39 +173,45 @@ chrome.runtime.onMessage.addListener(
                   "from the extension");
 
       if (request.action == "start") {
-        document.addEventListener("click", logClickEvent);
+        chrome.storage.sync.set({currentJQueryEvents: []}, function() {
+          console.log("Recordinglist updated.");
+        });
+        $(document.body).on("click mousedown mouseup focus blur keydown change", logEvent);
+        /* document.addEventListener("click", logClickEvent);
         document.addEventListener('keydown', logKeydownEvent);
         scrollableElements.forEach((element, index) => {
           element.addEventListener("scroll", logScrollEvent);
         });
         chrome.storage.sync.set({currentEvents: []}, function() {
           console.log("Recordinglist updated.");
-        });
+        }); */
         sendResponse({response: "started"});
       }
 
       if (request.action == "continue") {
-        document.addEventListener("click", logClickEvent);
+        $(document.body).on("click mousedown mouseup focus blur keydown change", logEvent);
+        /* document.addEventListener("click", logClickEvent);
         document.addEventListener('keydown', logKeydownEvent);
         scrollableElements.forEach(element => {
           element.addEventListener("scroll", logScrollEvent);
-        });
+        }); */
         sendResponse({response: "continued"});
       }
 
       else if (request.action == "stop") {
-        document.removeEventListener("click", logClickEvent, false);
+        $(document.body).off("click mousedown mouseup focus blur keydown change", logEvent);
+        /* document.removeEventListener("click", logClickEvent, false);
         document.removeEventListener('keydown', logKeydownEvent, false);
         scrollableElements.forEach(element => {
           element.removeEventListener("scroll", logScrollEvent, false);
-        });
+        }); */
 
           // Dodaj evente u listu
         chrome.storage.sync.get('recordingsList', function(data) {
-          console.log("NOVIdata", data)
           newRecordingsList = data.recordingsList;
-          chrome.storage.sync.get('currentEvents', function(clickEvent) {
-            clickEvents = clickEvent.currentEvents;
+          chrome.storage.sync.get('currentJQueryEvents', function(clickEvent) {
+            console.log("ASDAAS", clickEvent)
+            clickEvents = clickEvent.currentJQueryEvents;
             
             newRecordingsList.push(
               {

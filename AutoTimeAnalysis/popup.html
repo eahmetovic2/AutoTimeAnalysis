@@ -1,6 +1,8 @@
 <!DOCTYPE html>
   <html>
-    <head>
+    <head>    
+      <link rel="stylesheet" type="text/css" href="chart/Chart.css">
+      <script src="chart/Chart.min.js"></script>
       <style>
         button {
           height: 35px;
@@ -23,6 +25,10 @@
       <div>      
         <p>All recordings</p>
         <table id="recordingsTable"></table>
+      </div>
+      <div>
+        <p>Details</p>        
+        <canvas id="myChart" width="400" height="400"></canvas>
       </div>
 
 
