@@ -5,6 +5,11 @@ var countBarChart = document.getElementById('countBarChart').getContext('2d');
 var averageTimeLineChart = document.getElementById('averageTimeLineChart').getContext('2d');
 var timePieChart = document.getElementById('timePieChart').getContext('2d');
 
+var countBarChartVar = null;
+var averageTimeLineChartVar = null;
+var timePieChartVar = null;
+
+
 /* let page = document.getElementById('buttonDiv');
 const kButtonColors = ['#3aa757', '#e8453c', '#f9bb2d', '#4688f1'];
 function constructOptions(kButtonColors) {
@@ -151,6 +156,7 @@ function addChart(type, chart, label, labels, data) {
         }
     }
   });
+  return myChart;
 }
 
 function PlayRecording(recording) {
@@ -164,9 +170,16 @@ function PlayRecording(recording) {
   groupedEvents.result.forEach(element => {
     barChartData.push(element.items.length);
   });
-  
 
-  addChart('bar', countBarChart, '# of Events', groupedEvents.values, barChartData);
+  //Clear charts
+  if(countBarChartVar != null) 
+    countBarChartVar.destroy();
+  if(averageTimeLineChartVar != null) 
+    averageTimeLineChartVar.destroy();
+  if(timePieChartVar != null) 
+    timePieChartVar.destroy();
+
+  countBarChartVar = addChart('bar', countBarChart, '# of Events', groupedEvents.values, barChartData);
 
 
   var averageTimeLineChartData = [];
@@ -177,7 +190,7 @@ function PlayRecording(recording) {
     });
     averageTimeLineChartData.push(averageTime / element.items.length);
   });
-  addChart('line', averageTimeLineChart, 'Average Time of Events', groupedEvents.values, averageTimeLineChartData);
+  averageTimeLineChartVar = addChart('line', averageTimeLineChart, 'Average Time of Events', groupedEvents.values, averageTimeLineChartData);
 
   var timePieChartData = [];
   groupedEvents.result.forEach(element => {
@@ -187,7 +200,7 @@ function PlayRecording(recording) {
     });
     timePieChartData.push(duration);
   });
-  addChart('pie', timePieChart, 'Duration of Events', groupedEvents.values, timePieChartData);
+  timePieChartVar = addChart('pie', timePieChart, 'Duration of Events', groupedEvents.values, timePieChartData);
 
   eventsTable.innerHTML = '';
   let headerRow = document.createElement('tr');
