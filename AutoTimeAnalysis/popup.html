@@ -3,6 +3,15 @@
     <head>    
       <link rel="stylesheet" type="text/css" href="chart/Chart.css">
       <script src="chart/Chart.min.js"></script>
+      
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <script src="https://kit.fontawesome.com/46414c7e02.js" crossorigin="anonymous"></script>
+
       <style>
         button {
           height: 35px;
@@ -18,18 +27,27 @@
         }
       </style>
     </head>
-    <body>
-      <div>
-        <button class="record" id="record"></button>
+    <body style="min-width: 300px;">
+      <div class="container popup-container">
+        <div style="border-bottom: 1px solid #e2e2e2;" class="row justify-content-center p-2">
+          <div style="font-size: 24px;">
+            <i class="fas fa-history"></i>
+            AutoTimeAnalysis
+          </div>
+        </div>
+        <div class="row justify-content-center py-3">
+          <button style="width: 100px" class="btn btn-outline-success" id="record"><i class="fas fa-record-vinyl"></i> Record</button>
+          <button style="width: 100px" class="btn btn-outline-danger ml-1" id="stop" disabled><i class="fas fa-stop"></i> Stop</button>
+        </div>
+        <div>      
+          <h5>All recordings</h5>
+          <table class="table mb-4" id="recordingsTable"></table>
+        </div>
+        <div class="row justify-content-center mb-4">
+          <button style="width: 150px;" class="btn btn-primary" id="openDetails">Open details</button>
+        </div>
       </div>
-      <div>      
-        <p>All recordings</p>
-        <table id="recordingsTable"></table>
-      </div>
-      <div>
-        <p>Details</p>        
-        <canvas id="myChart" width="400" height="400"></canvas>
-      </div>
+      
 
 
         <script src="popup.js"></script>

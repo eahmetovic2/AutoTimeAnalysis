@@ -12,7 +12,7 @@ function constructOptions(kButtonColors) {
     let button = document.createElement('button');
     button.style.backgroundColor = item;
     button.addEventListener('click', function() {
-      chrome.storage.sync.set({color: item}, function() {
+      chrome.storage.local.set({color: item}, function() {
         console.log('color is ' + item);
       })
     });
@@ -28,12 +28,15 @@ let recordingsTable = document.getElementById('recordingsTable');
 
 function displayRecordings(allRecordings) {  
   let headerRow = document.createElement('tr');
-  let headerItem = document.createElement('td');
+  let headerItem = document.createElement('th');
   headerItem.innerHTML = "Item";
-  let headerTime = document.createElement('td');
+  let headerHost = document.createElement('th');
+  headerHost.innerHTML = "Hostname";
+  let headerTime = document.createElement('th');
   headerTime.innerHTML = "Time";
-  let headerAction = document.createElement('td');
+  let headerAction = document.createElement('th');
   headerRow.appendChild(headerItem);
+  headerRow.appendChild(headerHost);
   headerRow.appendChild(headerTime);
   headerRow.appendChild(headerAction);
   recordingsTable.appendChild(headerRow);
@@ -45,25 +48,52 @@ function displayRecordings(allRecordings) {
     tableDataItem.innerHTML = item.name;
     tableRow.appendChild(tableDataItem);
 
+    let tableDataHost = document.createElement('td');
+    tableDataHost.innerHTML = item.host;
+    tableRow.appendChild(tableDataHost);
+
     let tableDataTime = document.createElement('td');
     tableDataTime.innerHTML = item.time;
     tableRow.appendChild(tableDataTime);
 
+    //Play button
     let tableDataActions = document.createElement('td');
     let playButton = document.createElement('button');
-    playButton.style.backgroundImage = "url('images/play-solid45.png')";
-    playButton.className = "record";
+    //playButton.style.backgroundImage = "url('images/play-solid45.png')";
+    //playButton.className = "record";
+    playButton.setAttribute("class", "btn playBtn");    
+    let playButtonIcon = document.createElement('i');
+    playButtonIcon.setAttribute("class", "fas fa-play");
+    playButton.appendChild(playButtonIcon);
+
     playButton.addEventListener('click', function() {
       PlayRecording(item);
     });
+
+
+    //Download button
+    let downloadButton = document.createElement('button');
+    //downloadButton.style.backgroundImage = "url('images/play-solid45.png')";
+    //downloadButton.className = "download";    
+    downloadButton.setAttribute("class", "btn downloadBtn");    
+    let downloadButtonIcon = document.createElement('i');
+    downloadButtonIcon.setAttribute("class", "fas fa-download");
+    downloadButton.appendChild(downloadButtonIcon);
+
+    downloadButton.addEventListener('click', function() {
+      DownloadRecording(item);
+    });
+
     tableDataActions.appendChild(playButton);
+    tableDataActions.appendChild(downloadButton);
+
     tableRow.appendChild(tableDataActions);
 
     recordingsTable.appendChild(tableRow);
   }
 }
 
-chrome.storage.sync.get('recordingsList', function(data) {
+chrome.storage.local.get('recordingsList', function(data) {
   displayRecordings(data.recordingsList)
 });
 
@@ -159,15 +189,21 @@ function PlayRecording(recording) {
   });
   addChart('pie', timePieChart, 'Duration of Events', groupedEvents.values, timePieChartData);
 
-
+  eventsTable.innerHTML = '';
   let headerRow = document.createElement('tr');
   let headerItem = document.createElement('td');
   headerItem.innerHTML = "Type";
+  let headertarget = document.createElement('td');
+  headertarget.innerHTML = "Target";
+  let headertargetId = document.createElement('td');
+  headertargetId.innerHTML = "Target ID";
   let headerTime = document.createElement('td');
   headerTime.innerHTML = "Time";
   let headerDuration = document.createElement('td');
   headerDuration.innerHTML = "Duration";
   headerRow.appendChild(headerItem);
+  headerRow.appendChild(headertarget);
+  headerRow.appendChild(headertargetId);
   headerRow.appendChild(headerTime);
   headerRow.appendChild(headerDuration);
   eventsTable.appendChild(headerRow);
@@ -180,6 +216,14 @@ function PlayRecording(recording) {
     tableDataEvent.innerHTML = index + '. ' + item.event;
     tableRow.appendChild(tableDataEvent);
 
+    let tableDataTarget = document.createElement('td');
+    tableDataTarget.innerHTML = item.target;
+    tableRow.appendChild(tableDataTarget);
+
+    let tableDataTargetId = document.createElement('td');
+    tableDataTargetId.innerHTML = item.targetId;
+    tableRow.appendChild(tableDataTargetId);
+
     let tableDataTime = document.createElement('td');
     tableDataTime.innerHTML = item.time;
     tableRow.appendChild(tableDataTime);
@@ -191,4 +235,20 @@ function PlayRecording(recording) {
     eventsTable.appendChild(tableRow);
     index++;
   }
+}
+
+function DownloadRecording(item) {
+  console.log("DownloadRecording", item);
+  var text = JSON.stringify(item);
+  var filename =  item.name + ".json";
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
 }

@@ -1,7 +1,7 @@
 console.log("RECORD");
 
 // Ako je ukljuceno snimanje na pocetku
-chrome.storage.sync.get('recording', function(data) {  
+chrome.storage.local.get('recording', function(data) {  
   if(data.recording) {
     //document.addEventListener("click", logClickEvent);
     //document.addEventListener('keydown', logKeydownEvent);    
@@ -10,9 +10,10 @@ chrome.storage.sync.get('recording', function(data) {
 });
 
 var logEvent = function(event) {
+  console.log(event.target.localName)
   var now = performance.now();
     var eventDuration = now - event.timeStamp;
-    chrome.storage.sync.get('currentJQueryEvents', function(data) {
+    chrome.storage.local.get('currentJQueryEvents', function(data) {
       events = data.currentJQueryEvents;
       events.push({ 
         event: event.type, 
@@ -43,7 +44,7 @@ var logEvent = function(event) {
         screenY: event.screenY,
         shiftKey: event.shiftKey,
         srcElement: event.srcElement,
-        target: event.target,
+        target: event.target.localName,
         timeStamp: event.timeStamp,
         toElement: event.toElement,
         which: event.which,
@@ -56,7 +57,7 @@ var logEvent = function(event) {
         location: event.location,
       });
 
-      chrome.storage.sync.set({currentJQueryEvents: events}, function() {
+      chrome.storage.local.set({currentJQueryEvents: events}, function() {
         console.log("currentJQueryEvents updated.");
       });
     });
@@ -69,7 +70,7 @@ var logClickEvent = function(event) {
   var eventDuration = now - event.timeStamp;
   console.log("EVENT", event);
     console.log(event.target.id, event.target);
-    chrome.storage.sync.get('currentEvents', function(data) {
+    chrome.storage.local.get('currentEvents', function(data) {
       console.log("currentEvents", data.currentEvents);
       clickEvents = data.currentEvents;
       clickEvents.push({ 
@@ -112,7 +113,7 @@ var logClickEvent = function(event) {
       });
 
       console.log("clickEventsbefore", clickEvents);
-      chrome.storage.sync.set({currentEvents: clickEvents}, function() {
+      chrome.storage.local.set({currentEvents: clickEvents}, function() {
         console.log("currentEvents updated.");
       });
       console.log("clickEvents", clickEvents);
@@ -122,7 +123,7 @@ var logKeydownEvent = function(event) {
   var now = performance.now();
   var eventDuration = now - event.timeStamp;
   console.log("EVENT", event);
-    chrome.storage.sync.get('currentEvents', function(data) {
+    chrome.storage.local.get('currentEvents', function(data) {
       console.log("currentEvents", data.currentEvents);
       clickEvents = data.currentEvents;
       clickEvents.push({ 
@@ -150,7 +151,7 @@ var logKeydownEvent = function(event) {
       });
 
       console.log("clickEventsbefore", clickEvents);
-      chrome.storage.sync.set({currentEvents: clickEvents}, function() {
+      chrome.storage.local.set({currentEvents: clickEvents}, function() {
         console.log("currentEvents updated.");
       });
       console.log("clickEvents", clickEvents);
@@ -173,7 +174,7 @@ chrome.runtime.onMessage.addListener(
                   "from the extension");
 
       if (request.action == "start") {
-        chrome.storage.sync.set({currentJQueryEvents: []}, function() {
+        chrome.storage.local.set({currentJQueryEvents: []}, function() {
           console.log("Recordinglist updated.");
         });
         $(document.body).on("click mousedown mouseup focus blur keydown change", logEvent);
@@ -182,7 +183,7 @@ chrome.runtime.onMessage.addListener(
         scrollableElements.forEach((element, index) => {
           element.addEventListener("scroll", logScrollEvent);
         });
-        chrome.storage.sync.set({currentEvents: []}, function() {
+        chrome.storage.local.set({currentEvents: []}, function() {
           console.log("Recordinglist updated.");
         }); */
         sendResponse({response: "started"});
@@ -207,22 +208,27 @@ chrome.runtime.onMessage.addListener(
         }); */
 
           // Dodaj evente u listu
-        chrome.storage.sync.get('recordingsList', function(data) {
+        chrome.storage.local.get('recordingsList', function(data) {
           newRecordingsList = data.recordingsList;
-          chrome.storage.sync.get('currentJQueryEvents', function(clickEvent) {
+          chrome.storage.local.get('currentJQueryEvents', function(clickEvent) {
             console.log("ASDAAS", clickEvent)
             clickEvents = clickEvent.currentJQueryEvents;
             
             newRecordingsList.push(
               {
                 name: "Rec" + (data.recordingsList.length + 1),
+                host: window.location.hostname,
                 time: dateToString(new Date(), 'dd/MM/yyyy') /* new Date().toUTCString() */,
                 items: clickEvents
               }
             );
 
-            chrome.storage.sync.set({recordingsList: newRecordingsList}, function() {
-              console.log("Recordinglist updated.");
+            chrome.storage.local.set({recordingsList: newRecordingsList}, function() {
+              //Update all recordings table in popup
+                  console.log("Recordinglist updated 1.");
+                  chrome.runtime.sendMessage({action: "updateRecordingList"}, function() {
+                    console.log("Recordinglist updated 1.");
+                  });
             });
             console.log("NOVI", newRecordingsList)
           });

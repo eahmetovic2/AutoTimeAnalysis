@@ -1,14 +1,32 @@
 let recording = false;
 let recordBtn = document.getElementById('record');
+let stopBtn = document.getElementById('stop');
+let openDetailsBtn = document.getElementById('openDetails');
 
-var ctx = document.getElementById('myChart').getContext('2d');
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log(sender.tab ?
+                "from a content script:" + sender.tab.url :
+                "from the extension");
 
-chrome.storage.sync.get('recording', function(data) {
+    if (request.action == "updateRecordingList") {
+      chrome.storage.local.get('recordingsList', function(data) {
+        displayRecordings(data.recordingsList)
+      });
+    }
+ 
+    sendResponse("stopped");
+  }
+);
+
+chrome.storage.local.get('recording', function(data) {
   console.log("DATA", data.recording)
   recording = data.recording;
 
   if(recording) {
-    recordBtn.style.backgroundImage = "url('images/stop-512.png')"; 
+    //recordBtn.style.backgroundImage = "url('images/stop-512.png')"; 
+    stopBtn.removeAttribute("disabled");
+    recordBtn.setAttribute("disabled", true);
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, {action: "continue"}, function(response) {
         console.log(response.response);
@@ -16,7 +34,9 @@ chrome.storage.sync.get('recording', function(data) {
     });
   }
   else {
-    recordBtn.style.backgroundImage = "url('images/Record-512.png')";  
+    recordBtn.removeAttribute("disabled");
+    stopBtn.setAttribute("disabled", true);
+    //recordBtn.style.backgroundImage = "url('images/Record-512.png')";  
   }
 });
 
@@ -33,14 +53,24 @@ chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
   });
 }); */
 
+function reloadTable(){
+  var container = document.getElementById("recordingsTable");
+  var content = container.innerHTML;
+  container.innerHTML= content; 
+  
+ //this line is to watch the result in console , you can remove it later	
+  console.log("Refreshed"); 
+}
 
-recordBtn.onclick = function(element) {  
+function startStopRecording(element) {  
   if(!recording) {
     recording = true;
-    chrome.storage.sync.set({recording: true}, function() {
+    chrome.storage.local.set({recording: true}, function() {
       console.log("Recording is true.");
     });
-    recordBtn.style.backgroundImage = "url('images/stop-512.png')";  
+    //recordBtn.style.backgroundImage = "url('images/stop-512.png')";  
+    stopBtn.removeAttribute("disabled");
+    recordBtn.setAttribute("disabled", true);
 
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, {action: "start"}, function(response) {
@@ -50,10 +80,12 @@ recordBtn.onclick = function(element) {
   }
   else {
     recording = false;
-    chrome.storage.sync.set({recording: false}, function() {
+    chrome.storage.local.set({recording: false}, function() {
       console.log("Recording is false.");
     });    
-    recordBtn.style.backgroundImage = "url('images/Record-512.png')";  
+    //recordBtn.style.backgroundImage = "url('images/Record-512.png')";  
+    recordBtn.removeAttribute("disabled");
+    stopBtn.setAttribute("disabled", true);
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       chrome.tabs.sendMessage(tabs[0].id, {action: "stop"}, function(response) {
         console.log(response.response);
@@ -62,6 +94,14 @@ recordBtn.onclick = function(element) {
   }
 };
 
+recordBtn.onclick = startStopRecording;
+stopBtn.onclick = startStopRecording;
+
+openDetailsBtn.addEventListener('click', function() {
+  chrome.runtime.openOptionsPage(function(a) {
+    console.log("Options opened.")
+  });
+});
 
 
 //Recording data
@@ -74,18 +114,23 @@ function showRecordingEvents(recording) {
   console.log(recording);
 }
 
-function displayRecordings(allRecordings) {  
+function displayRecordings(allRecordings) { 
+  recordingsTable.innerHTML = '';
+  let header = document.createElement('thead');
   let headerRow = document.createElement('tr');
-  let headerItem = document.createElement('td');
+  let headerItem = document.createElement('th');
   headerItem.innerHTML = "Item";
-  let headerTime = document.createElement('td');
+  let headerHost = document.createElement('th');
+  headerHost.innerHTML = "Hostname";
+  let headerTime = document.createElement('th');
   headerTime.innerHTML = "Time";
-  let headerAction = document.createElement('td');
   headerRow.appendChild(headerItem);
+  headerRow.appendChild(headerHost);
   headerRow.appendChild(headerTime);
-  headerRow.appendChild(headerAction);
-  recordingsTable.appendChild(headerRow);
+  header.appendChild(headerRow);
+  recordingsTable.appendChild(header);
 
+  let tbody = document.createElement('tbody');
   for (let item of allRecordings) {
     let tableRow = document.createElement('tr');
 
@@ -93,28 +138,20 @@ function displayRecordings(allRecordings) {
     tableDataItem.innerHTML = item.name;
     tableRow.appendChild(tableDataItem);
 
+    let tableDataHost = document.createElement('td');
+    tableDataHost.innerHTML = item.host;
+    tableRow.appendChild(tableDataHost);
+
     let tableDataTime = document.createElement('td');
     tableDataTime.innerHTML = item.time;
     tableRow.appendChild(tableDataTime);
 
-    let tableDataActions = document.createElement('td');
-    let playButton = document.createElement('button');
-    playButton.style.backgroundImage = "url('images/play-solid45.png')";
-    playButton.className = "record";
-    playButton.addEventListener('click', function() {
-      //PlayRecording(item);
-      chrome.runtime.openOptionsPage(function(a) {
-        console.log("Options opened.")
-      });
-    });
-    tableDataActions.appendChild(playButton);
-    tableRow.appendChild(tableDataActions);
-
-    recordingsTable.appendChild(tableRow);
+    tbody.appendChild(tableRow);
   }
+  recordingsTable.appendChild(tbody);
 }
 
-chrome.storage.sync.get('recordingsList', function(data) {
+chrome.storage.local.get('recordingsList', function(data) {
   displayRecordings(data.recordingsList)
 });
 
@@ -133,66 +170,4 @@ function groupBy(collection, property) {
   }
   return { values: values, result: result};
 }
-
-function PlayRecording(recording) {
-  recording.items.forEach(item => {
-    item.datetime = new Date(item.time);
-  });
-  console.log(recording);
-  /* recording.items.forEach(item => {
-    if(item.event == "click") {
-      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {action: "simulate_click", value: item.value}, function(response) {
-          console.log(response.response);
-        });
-      });
-    }
-    else if(item.event == "keydown") {
-      console.log("keydown key: " + item.value.key)
-    }
-  }); */
-  var groupedEvents = groupBy(recording.items, "event");
-  console.log(groupedEvents);
-  var data = [];
-  groupedEvents.result.forEach(element => {
-    data.push(element.items.length);
-  });
-  var myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: groupedEvents.values,
-        datasets: [{
-            label: '# of Events',
-            data: data,
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
-        }
-    }
-});
-}
-
 
