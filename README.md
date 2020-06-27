@@ -8,10 +8,11 @@ AutoTimeAnalysis is a Chrome Extension that allows users to store and analyse a 
 * Click the LOAD UNPACKED button and select the extension directory.
 
 ## Usage example
-* Click on Record button to start recording
+* Click on Record button to start recording  
 ![alt text](https://github.com/eahmetovic2/BlazorErp/blob/master/AutoTimeAnalysis/usage/RecordBtn.jpg)
 * Execute actions on the web app where the recording is started
-* Click on Stop button to stop recording
+* Click on Stop button to stop recording  
+![alt text](https://github.com/eahmetovic2/BlazorErp/blob/master/AutoTimeAnalysis/usage/StopBtn.jpg)
 * Click on the Play button in the list of recording
 ![alt text](https://github.com/eahmetovic2/BlazorErp/blob/master/AutoTimeAnalysis/usage/ReportExample.jpg)
 * Analyse the generated reports
