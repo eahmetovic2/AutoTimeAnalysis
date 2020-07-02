@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using BlazorErp.Server.Data;
 using BlazorErp.Server.Models;
+using BlazorErp.Server.Models.Korisnik;
 
 namespace BlazorErp.Server
 {
@@ -30,14 +31,15 @@ namespace BlazorErp.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
+                options.UseNpgsql(
                     Configuration.GetConnectionString("BlazorContext")));
 
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityKorisnik>()
+                .AddRoles<Uloga>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+                .AddApiAuthorization<IdentityKorisnik, ApplicationDbContext>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();

@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using BlazorErp.Server.Models
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
+@using BlazorErp.Server.Models.Korisnik
+@inject SignInManager<IdentityKorisnik> SignInManager
+@inject UserManager<IdentityKorisnik> UserManager
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
