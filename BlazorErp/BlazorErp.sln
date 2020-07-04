@@ -3,11 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorErp.Server", "BlazorErp\Server\BlazorErp.Server.csproj", "{6DB21462-11EB-49F6-BA91-A8CAFACAABC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorErp.Server", "BlazorErp\Server\BlazorErp.Server.csproj", "{6DB21462-11EB-49F6-BA91-A8CAFACAABC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorErp.Client", "BlazorErp\Client\BlazorErp.Client.csproj", "{296B7F37-2C2A-4FEA-8181-206CC17A1441}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorErp.Client", "BlazorErp\Client\BlazorErp.Client.csproj", "{296B7F37-2C2A-4FEA-8181-206CC17A1441}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorErp.Shared", "BlazorErp\Shared\BlazorErp.Shared.csproj", "{78BD1816-068B-411B-A15C-A65C70AB6BE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorErp.Shared", "BlazorErp\Shared\BlazorErp.Shared.csproj", "{78BD1816-068B-411B-A15C-A65C70AB6BE6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorErp.Services", "BlazorErp\Services\BlazorErp.Services.csproj", "{71A5552C-B592-4CB6-B7FD-09E970DDDBDF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorErp.Entities", "BlazorErp\Entities\BlazorErp.Entities.csproj", "{0F0BE75B-3DE3-410E-8F39-D596967176F5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorErp.Core", "BlazorErp\Core\BlazorErp.Core.csproj", "{9506FADE-6F34-41DB-AB19-BBBE1D7F641C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorErp.Mapping", "BlazorErp\Mapping\BlazorErp.Mapping.csproj", "{C677BBC1-7E77-4C0E-A780-40EA363B2D0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +35,22 @@ Global
 		{78BD1816-068B-411B-A15C-A65C70AB6BE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78BD1816-068B-411B-A15C-A65C70AB6BE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78BD1816-068B-411B-A15C-A65C70AB6BE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71A5552C-B592-4CB6-B7FD-09E970DDDBDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71A5552C-B592-4CB6-B7FD-09E970DDDBDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71A5552C-B592-4CB6-B7FD-09E970DDDBDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71A5552C-B592-4CB6-B7FD-09E970DDDBDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F0BE75B-3DE3-410E-8F39-D596967176F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F0BE75B-3DE3-410E-8F39-D596967176F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F0BE75B-3DE3-410E-8F39-D596967176F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F0BE75B-3DE3-410E-8F39-D596967176F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9506FADE-6F34-41DB-AB19-BBBE1D7F641C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9506FADE-6F34-41DB-AB19-BBBE1D7F641C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9506FADE-6F34-41DB-AB19-BBBE1D7F641C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9506FADE-6F34-41DB-AB19-BBBE1D7F641C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C677BBC1-7E77-4C0E-A780-40EA363B2D0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C677BBC1-7E77-4C0E-A780-40EA363B2D0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C677BBC1-7E77-4C0E-A780-40EA363B2D0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C677BBC1-7E77-4C0E-A780-40EA363B2D0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
