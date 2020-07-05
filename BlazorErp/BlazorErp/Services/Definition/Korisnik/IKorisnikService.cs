@@ -11,7 +11,7 @@ using BlazorErp.Shared.Models.Response.Korisnik.Korisnik;
 using BlazorErp.Shared.Models.Request.Korisnik.Korisnik;
 using System.Threading.Tasks;
 
-namespace BlazorErp.Services
+namespace BlazorErp.Services.Definition.Korisnik
 {
     /// <summary>
     /// Servis koji radi sa korisnicima
@@ -38,7 +38,7 @@ namespace BlazorErp.Services
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        ServiceResult<KorisnikListModel> VratiSve(ListaKorisnikaRequestModel model);
+        KorisnikListModel VratiSve(ListaKorisnikaRequestModel model);
 
         /// <summary>
         /// Postavlja korisnika kao omogucenog ili onemogucenog

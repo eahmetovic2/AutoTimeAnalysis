@@ -10,9 +10,9 @@ namespace BlazorErp.Server.Auth.Requirements
 {
     public class ClaimRequirementAttribute : TypeFilterAttribute
     {
-        public ClaimRequirementAttribute(string claimType, string claimValue) : base(typeof(ClaimRequirementFilter))
+        public ClaimRequirementAttribute(string claimType, int claimValue) : base(typeof(ClaimRequirementFilter))
         {
-            Arguments = new object[] { new Claim(claimType, claimValue) };
+            Arguments = new object[] { new Claim(claimType, claimValue.ToString()) };
         }
     }
 

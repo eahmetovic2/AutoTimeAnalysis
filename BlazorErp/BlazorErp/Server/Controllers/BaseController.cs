@@ -11,8 +11,9 @@ namespace BlazorErp.Server.Controllers
     /// Bazni kontroler za aplikaciju
     /// </summary>
     [Authorize]
+    [ApiController]
     [ValidateModel]
-    public class BaseController : Controller
+    public class BaseController : ControllerBase
     {
         /// <summary>
         /// Konvertuj ServiceResult u IActionResult

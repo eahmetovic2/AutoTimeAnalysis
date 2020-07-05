@@ -23,6 +23,9 @@ using System.IO;
 using BlazorErp.Server.Areas.Identity;
 using BlazorErp.Server.Common.Services;
 using BlazorErp.Services.Definition.Base;
+using BlazorErp.Services.Implementation;
+using BlazorErp.Services.Definition.Korisnik;
+using BlazorErp.Server.Auth.Services;
 
 namespace BlazorErp.Server
 {
@@ -46,7 +49,6 @@ namespace BlazorErp.Server
 
             services.AddDefaultIdentity<IdentityKorisnik>(options =>
             {
-                options.User.RequireUniqueEmail = true;
                 options.Password.RequiredLength = 6;
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
@@ -54,7 +56,6 @@ namespace BlazorErp.Server
                 options.Password.RequireNonAlphanumeric = false;
                 options.Lockout.AllowedForNewUsers = false;
             })
-
                 .AddRoles<Uloga>()
                 .AddEntityFrameworkStores<Context>()
                 .AddDefaultTokenProviders();
@@ -66,10 +67,10 @@ namespace BlazorErp.Server
             services.AddIdentityServer()
                 .AddApiAuthorization<IdentityKorisnik, Context>(options =>
                 {
-                    options.IdentityResources.Clear();
-                    options.IdentityResources.AddOpenId();
-                    options.IdentityResources.AddEmail();
-                    options.IdentityResources.AddProfile();
+                    //options.IdentityResources.Clear();
+                    //options.IdentityResources.AddOpenId();
+                    //options.IdentityResources.AddEmail();
+                    //options.IdentityResources.AddProfile();
                 })
                 .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>()
                 .AddProfileService<IdentityProfileService>();
@@ -85,20 +86,29 @@ namespace BlazorErp.Server
 
             services.Configure<UploadSettings>(Configuration.GetSection("Upload"));
 
-            builder.RegisterModule<ServiceModule>();
+            // dodaj asp.net servise u kontejner
+            builder.Populate(services);
+            // konstruisi kontejner
+            var container = builder.Build();
+            builder.RegisterInstance(container).As<IContainer>();
 
+            // create the IServiceProvider based on the container.
+            //return new AutofacServiceProvider(container);
+        }
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            // Add things to the Autofac ContainerBuilder.
+            builder.RegisterModule(new ServiceModule());
+
+            //dodajem implementaciju auth service
+            builder.RegisterType<AuthService>().As<IAuthService>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
             //dodajem implemetaciju ApplicationConfigurationService
             builder.RegisterType<ApplicationConfigurationService>().As<IApplicationConfigurationService>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
 
-            // dodaj asp.net servise u kontejner
-            builder.Populate(services);
-            // konstruisi kontejner
-            var container = builder.Build();
-
-            // create the IServiceProvider based on the container.
-            //return new AutofacServiceProvider(container);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

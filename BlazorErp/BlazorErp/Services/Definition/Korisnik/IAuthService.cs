@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BlazorErp.Services
+namespace BlazorErp.Services.Definition.Korisnik
 {
     /// <summary>
     /// Daje mogucnost pristupanja podacima trento logovanog korisnika

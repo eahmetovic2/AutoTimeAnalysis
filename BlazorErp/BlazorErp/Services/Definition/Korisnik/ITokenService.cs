@@ -7,7 +7,7 @@ using System.Text;
 using BlazorErp.Shared.Models.Request.Korisnik;
 using BlazorErp.Entities.Models;
 
-namespace BlazorErp.Services
+namespace BlazorErp.Services.Definition.Korisnik
 {
     /// <summary>
     /// Servis koji radi sa tokenima

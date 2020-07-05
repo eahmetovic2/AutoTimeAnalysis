@@ -9,6 +9,9 @@ using BlazorErp.Server.Auth.Requirements;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using BlazorErp.Shared.Prava;
+using BlazorErp.Shared.Models.Response.Korisnik.Korisnik;
+using BlazorErp.Services.Definition.Korisnik;
 
 namespace BlazorErp.Server.Controllers.Korisnik
 {
@@ -41,17 +44,20 @@ namespace BlazorErp.Server.Controllers.Korisnik
 		}
 
 		[HttpGet("")]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_lista")]
-        public IActionResult VratiSve([FromQuery]ListaKorisnikaRequestModel model)
+		//[ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_lista")]
+		[ClaimRequirement("PravoAkcija", (int)PravoAkcije.KorisnikLista)]
+		public KorisnikListModel VratiSve([FromQuery]ListaKorisnikaRequestModel model)
 		{
 			var result = korisnikService.VratiSve(model);
-			return Convert(result);
+			return result;
+			//return Convert(result);
 		}
 
 		[HttpGet("{korisnickoIme}")]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_pregled")]
-        //[Authorize("UserIsAdminOrOwner")]
-        public IActionResult VratiJedan(String korisnickoIme)
+        //[ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_pregled")]
+		[ClaimRequirement("PravoAkcija", (int)PravoAkcije.KorisnikPregled)]	
+		//[Authorize("UserIsAdminOrOwner")]
+		public IActionResult VratiJedan(String korisnickoIme)
 		{
 			try
 			{
@@ -65,7 +71,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
         }
 
         [HttpPut("{korisnickoIme}")]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_izmjena")]
+        //[ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_izmjena")]
         //[Authorize("UserIsAdminOrOwner")]
         [RequireModel]
 		public IActionResult Azuriraj(String korisnickoIme, [FromBody] AzurirajKorisnikaRequestModel model)
@@ -84,7 +90,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
 		}
 
         [HttpPut("{korisnickoIme}/licni-detalji")]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_izmjena_licnih_podataka")]
+        //[ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_izmjena_licnih_podataka")]
         [RequireModel]
         public IActionResult AzurirajLicneDetalje(String korisnickoIme, [FromBody] AzurirajLicneDetaljeRequestModel model)
         {
@@ -103,7 +109,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
 
         [HttpPut("{korisnickoIme}/lozinka")]
 		[RequireModel]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_promjena_lozinke")]
+        //[ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_promjena_lozinke")]
         public async Task<IActionResult> PromijeniLozinku(String korisnickoIme, [FromBody] PromijeniLozinkuRequestModel model)
 		{
 			var result = await korisnikService.PromijeniLozinku(korisnickoIme, model.Lozinka, model.NovaLozinka);
@@ -112,7 +118,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
 
 		[HttpPost("{korisnickoIme}/lozinka")]
 		[RequireModel]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_promjena_lozinke")]
+        //[ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_promjena_lozinke")]
         public async Task<IActionResult> PostaviLozinku(String korisnickoIme, [FromBody] PostaviLozinkuRequestModel model)
 		{
 			var result = await korisnikService.PostaviLozinku(korisnickoIme, model.NovaLozinka);
@@ -121,7 +127,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
 
 		[HttpPut("{korisnickoIme}/onemogucen")]
 		[RequireModel]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_aktivacija")]
+        //[ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_aktivacija")]
         public IActionResult PostaviKorisnikOnemogucen(String korisnickoIme, [FromBody] PostaviKorisnikOnemogucenRequestModel model)
 		{
 			var result = korisnikService.PostaviKorisnikOnemogucen(korisnickoIme, model.Onemogucen);
@@ -130,7 +136,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
 
 		[HttpPost("")]
 		[RequireModel]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_dodavanje")]
+        //[ClaimRequirement(ClaimTypes.UserData, "korisnik_korisnik_dodavanje")]
         public async Task<IActionResult> Kreiraj([FromBody] KreirajKorisnikaRequestModel model)
 		{
 			var result = await korisnikService.Kreiraj(model);

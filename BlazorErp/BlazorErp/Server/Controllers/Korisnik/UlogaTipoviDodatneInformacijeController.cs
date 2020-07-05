@@ -21,7 +21,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
         }
 
         [HttpGet("zaulogu/{ulogaId:int}")]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_lista_tipova_dodatne_informacije")]
+       //[ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_lista_tipova_dodatne_informacije")]
         public IActionResult VratiSve(int ulogaId)
         {
             var result = ulogaTipoviDodatneInformacijeService.VratiZaUlogu(ulogaId);
@@ -29,7 +29,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
         }
 
         [HttpPut("zaulogu/{ulogaId:int}")]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_izmjena_tipova_dodatne_informacije")]
+       //[ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_izmjena_tipova_dodatne_informacije")]
         public IActionResult SnimiZaUlogu(int ulogaId, [FromBody]SnimiDodatneInformacijeUlogeRequestModel model)
         {
             var result = ulogaTipoviDodatneInformacijeService.SnimiZaUlogu(ulogaId, model);

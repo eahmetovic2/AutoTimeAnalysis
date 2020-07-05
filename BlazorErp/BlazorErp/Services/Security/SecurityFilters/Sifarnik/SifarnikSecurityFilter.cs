@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BlazorErp.Core.Database;
+using BlazorErp.Services.Definition.Korisnik;
 
 namespace BlazorErp.Services.Security.SecurityFilters.Sifarnik
 {

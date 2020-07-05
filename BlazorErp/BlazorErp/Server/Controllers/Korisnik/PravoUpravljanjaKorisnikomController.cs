@@ -21,7 +21,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
         }
 
         [HttpGet("{ulogaId:int}")]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_pravo_upravljanja_korisnikom_lista")]
+        //[ClaimRequirement(ClaimTypes.UserData, "korisnik_pravo_upravljanja_korisnikom_lista")]
         public IActionResult VratiSve(int ulogaId)
         {
             var result = pravoUpravljanjaKorisnikomService.VratiSve(ulogaId);

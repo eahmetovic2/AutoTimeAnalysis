@@ -29,7 +29,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
 
         [HttpPost("")]
         [RequireModel]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_dodavanje")]
+       //[ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_dodavanje")]
         public async Task<IActionResult> Kreiraj([FromBody] KreirajUloguRequestModel model)
         {
             var vrsta = await ulogaService.Kreiraj(model);
@@ -38,7 +38,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
 
         [HttpPut("{ulogaId:int}")]
         [RequireModel]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_izmjena")]
+       //[ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_izmjena")]
         public IActionResult Azuriraj(int ulogaId, [FromBody] AzurirajUloguRequestModel model)
         {
             var vrsta = ulogaService.Azuriraj(ulogaId, model);
@@ -46,7 +46,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
         }
 
         [HttpGet("")]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_lista")]
+       //[ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_lista")]
         public IActionResult VratiSve()
         {
             var result = ulogaService.VratiSve();
@@ -54,7 +54,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
         }
 
         [HttpGet("{ulogaId:int}")]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_pregled")]
+       //[ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_pregled")]
         public IActionResult VratiJednu(int ulogaId)
         {
             var result = ulogaService.VratiPoIdu(ulogaId);
@@ -63,7 +63,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
 
 
         [HttpGet("{ulogaId:int}/dozvoljeneakcije")]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_lista_dozvoljenih_akcija")]
+       //[ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_lista_dozvoljenih_akcija")]
         public IActionResult VratiSveDozvoljeneAkcije(int ulogaId)
         {
             var result = ulogaService.VratiSveDozvoljeneAkcije(ulogaId);
@@ -71,7 +71,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
         }
 
         [HttpPut("{ulogaId:int}/dozvoljeneakcije")]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_izmjena_dozvoljenih_akcija")]
+       //[ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_izmjena_dozvoljenih_akcija")]
         public IActionResult SnimiDozvoljeneAkcije(int ulogaId, [FromBody]SnimiDozvoljeneAkcijeRequestModel model)
         {
             var result = ulogaService.SnimiDozvoljeneAkcije(ulogaId, model);
@@ -79,7 +79,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
         }
 
         [HttpGet("{ulogaId:int}/grupeprava")]
-        [ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_lista_grupa_prava")]
+       //[ClaimRequirement(ClaimTypes.UserData, "korisnik_uloga_lista_grupa_prava")]
         public IActionResult VratiGrupePravaProsireno(int ulogaId)
         {
             var result = ulogaService.VratiSveGrupePravaProsireno(ulogaId);

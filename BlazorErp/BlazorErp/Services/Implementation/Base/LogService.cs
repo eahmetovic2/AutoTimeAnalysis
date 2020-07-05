@@ -13,6 +13,7 @@ using BlazorErp.Shared.Models.Response.LogEntitet;
 using BlazorErp.Mapping.Mappers.Base.LogAkcijaMap;
 using BlazorErp.Mapping.Mappers.LogEntitet;
 using Microsoft.EntityFrameworkCore;
+using BlazorErp.Services.Definition.Korisnik;
 
 namespace BlazorErp.Services.Implementation
 {

@@ -187,7 +187,7 @@ namespace BlazorErp.Services.Implementation
 			if (korisnik == null)
 				return NotFound();
 
-            var userStore = new UserStore<IdentityKorisnik, Uloga, Context, int, IdentityUserClaim<int>, KorisnikUloga, IdentityUserLogin<int>, IdentityUserToken<int>, IdentityRoleClaim<int>>(context);
+            var userStore = new UserStore<IdentityKorisnik, Entities.Models.Korisnik.Uloga, Context, int, IdentityUserClaim<int>, KorisnikUloga, IdentityUserLogin<int>, IdentityUserToken<int>, IdentityRoleClaim<int>>(context);
 
             var passwordHasher = new PasswordHasher<IdentityKorisnik>();
             var hashed = passwordHasher.HashPassword(korisnik, novaLozinka);
@@ -220,7 +220,7 @@ namespace BlazorErp.Services.Implementation
 			return Ok();
 		}
 
-		public ServiceResult<KorisnikListModel> VratiSve(ListaKorisnikaRequestModel model)
+		public KorisnikListModel VratiSve(ListaKorisnikaRequestModel model)
         {
             var securityLevel = new SecurityLevel();
 
@@ -264,8 +264,8 @@ namespace BlazorErp.Services.Implementation
                 Page = model.Page,
                 Total = total
             };
-
-            return Ok(result);
+            return result;
+            //return Ok(result);
         }
 
 
@@ -312,7 +312,7 @@ namespace BlazorErp.Services.Implementation
             var passwordHasher = new PasswordHasher<IdentityKorisnik>();
             var hashed = passwordHasher.HashPassword(korisnik, model.Lozinka);
             korisnik.PasswordHash = hashed;
-            var userStore = new UserStore<IdentityKorisnik, Uloga, Context, int, IdentityUserClaim<int>, KorisnikUloga, IdentityUserLogin<int>, IdentityUserToken<int>, IdentityRoleClaim<int>>(context);
+            var userStore = new UserStore<IdentityKorisnik, Entities.Models.Korisnik.Uloga, Context, int, IdentityUserClaim<int>, KorisnikUloga, IdentityUserLogin<int>, IdentityUserToken<int>, IdentityRoleClaim<int>>(context);
             await userStore.CreateAsync(korisnik);
 
             foreach (var uloga in model.Uloge)

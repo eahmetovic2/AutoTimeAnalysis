@@ -12,6 +12,7 @@ using BlazorErp.Core.Database;
 using Microsoft.EntityFrameworkCore;
 //using Microsoft.EntityFrameworkCore.Relational;
 using BlazorErp.Services.Security;
+using BlazorErp.Services.Definition.Korisnik;
 
 [assembly: InternalsVisibleTo("Web.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

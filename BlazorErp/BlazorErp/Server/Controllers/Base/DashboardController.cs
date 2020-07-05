@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using BlazorErp.Services;
+using BlazorErp.Services.Definition.Korisnik;
 //using Microsoft.AspNetCore.Mvc;
 namespace BlazorErp.Server.Controllers.Base
 {

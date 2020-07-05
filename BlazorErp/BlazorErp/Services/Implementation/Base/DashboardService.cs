@@ -5,6 +5,7 @@ using BlazorErp.Services.Result;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using BlazorErp.Entities;
+using BlazorErp.Services.Definition.Korisnik;
 
 namespace BlazorErp.Services.Implementation
 {

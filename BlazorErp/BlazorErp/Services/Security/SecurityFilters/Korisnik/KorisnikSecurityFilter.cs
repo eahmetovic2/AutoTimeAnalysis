@@ -5,6 +5,7 @@ using System.Text;
 using BlazorErp.Core.Database;
 using BlazorErp.Entities;
 using BlazorErp.Entities.Models.Korisnik;
+using BlazorErp.Services.Definition.Korisnik;
 
 namespace BlazorErp.Services.Security.SecurityFilters.Korisnik
 {
