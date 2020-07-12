@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using BlazorStyled;
 
 namespace BlazorErp.Client
 {
@@ -16,6 +17,7 @@ namespace BlazorErp.Client
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
+            builder.Services.AddBlazorStyled();
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddHttpClient("BlazorErp.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
@@ -25,6 +27,8 @@ namespace BlazorErp.Client
             builder.Services.AddTransient(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("BlazorErp.ServerAPI"));
 
             builder.Services.AddApiAuthorization();
+
+            builder.Services.AddAntDesign();
 
             await builder.Build().RunAsync();
         }

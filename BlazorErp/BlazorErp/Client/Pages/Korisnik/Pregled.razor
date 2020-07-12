@@ -1,0 +1,37 @@
+﻿@page "/korisnici/{KorisnickoIme}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using BlazorErp.Shared.Models.Response.Korisnik.Korisnik
+@attribute [Authorize]
+@inject HttpClient Http
+
+<ErpPage Title="Pregled korisnika">
+    @if (korisnk == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <span>@korisnk.KorisnickoIme</span>
+    }
+</ErpPage>
+
+
+@code{
+    [Parameter]
+    public string KorisnickoIme { get; set; }
+
+    private KorisnikModel korisnk;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            korisnk = await Http.GetFromJsonAsync<KorisnikModel>($"korisnici/{KorisnickoIme}");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+}

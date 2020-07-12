@@ -1,0 +1,55 @@
+﻿@page "/korisnici"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using BlazorErp.Shared.Models.Response.Korisnik.Korisnik
+@attribute [Authorize]
+@inject HttpClient Http
+
+<ErpPage Title="Korisnici">
+
+    @if (korisnici == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <Table DataSource="@korisnici.Items">
+            <Column @bind-Field="@context.KorisnickoIme">
+                <NavLink href="@{$"korisnici/{context.KorisnickoIme}"}">
+                    @context.KorisnickoIme
+                </NavLink>
+            </Column>
+            <Column @bind-Field="@context.PunoIme"></Column>
+            <Column @bind-Field="@context.Uloga"></Column>
+            <ActionColumn Title="Acton">
+                <Space Size="middle">
+                    <SpaceItem>
+                        <a>Izmijeni</a>
+                    </SpaceItem>
+                    <SpaceItem>
+                        <a>Delete</a>
+                    </SpaceItem>
+                </Space>
+            </ActionColumn>
+        </Table>
+    }
+</ErpPage>
+
+
+
+@code {
+    private KorisnikListModel korisnici;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            korisnici = await Http.GetFromJsonAsync<KorisnikListModel>("korisnici");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+}

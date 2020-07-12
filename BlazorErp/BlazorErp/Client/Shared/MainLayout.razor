@@ -1,16 +1,60 @@
 ﻿@inherits LayoutComponentBase
+<Styled>
+    .my-navbar {
+        box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15);
+        border-right: 1px solid #f0f0f0;
+        background: white !important;
+    }
+    .my-header {
+        background: #5e72e4 !important;
+        color: white;
+        font-weight: 600;
+        padding: 0 !important;
+    }
+    .my-top-header {
+        border-color: rgba(255,255,255,.08)!important;
+        border-bottom: 1px solid;
+        height: 64px !important;
+    }
+    .header-extension {
+        background: #5e72e4 !important;
+        height: 128px;
+    }
+</Styled>
 
-<div class="sidebar">
-    <NavMenu />
-</div>
+    <Layout>
+        <Sider Class="my-navbar">
+            <NavMenu />
+        </Sider>
+        <Layout>
+            <Header Class="my-header">
+                <div class="top-row px-4 auth my-top-header">
+                    <Row Justify="end" Style="width: 100%;">
+                        <LoginDisplay />
+                        <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+                    </Row>
+                </div>
+                <div class="header-extension pb-6">
+                </div>
+            </Header>
+            <Content>
+                @Body
+            </Content>
+            <Footer>Footer</Footer>
+        </Layout>
+    </Layout>
 
-<div class="main">
-    <div class="top-row px-4 auth">
-        <LoginDisplay />
-        <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+    <!--<div class="my-navbar p-0">
+        <NavMenu />
     </div>
 
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
+    <div class="main-content">
+        <div class="top-row px-4 auth">
+            <LoginDisplay />
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <div class="content px-4">
+            @Body
+        </div>
+    </div>-->
