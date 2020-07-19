@@ -17,7 +17,7 @@ namespace BlazorErp.Mapping.Mappers.KorisnikMap
             return query.Select(korisnik => new KorisnikModel()
             {
                 Id = korisnik.Id,
-                KorisnickoIme = korisnik.NormalizedUserName,
+                KorisnickoIme = korisnik.UserName,
                 Email = korisnik.Email,
                 PunoIme = korisnik.PunoIme,
                 //DatumKreiranja = korisnik.DatumKreiranja,
@@ -41,7 +41,7 @@ namespace BlazorErp.Mapping.Mappers.KorisnikMap
             return query.Select(korisnik => new KorisnikTokenModel()
             {
                 Id = korisnik.Id,
-                KorisnickoIme = korisnik.NormalizedUserName,
+                KorisnickoIme = korisnik.UserName,
                 TrenutnaUlogaId = korisnik.TrenutnaUlogaId,
                 Email = korisnik.Email,
                 PunoIme = korisnik.PunoIme,
@@ -85,7 +85,7 @@ namespace BlazorErp.Mapping.Mappers.KorisnikMap
             return query.Select(korisnik => new KorisnikListModelItem()
             {
                 Id = korisnik.Id,
-                KorisnickoIme = korisnik.NormalizedUserName,
+                KorisnickoIme = korisnik.UserName,
                 Uloga = string.Join(", ", korisnik.Roles
                                                   .Select(a => a.Role.Name)
                                                   .ToList()),

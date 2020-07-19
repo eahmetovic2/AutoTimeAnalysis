@@ -176,7 +176,7 @@ namespace BlazorErp.Services.Implementation
         public int SaveChanges(Context context)
         {
             var korisnik = Scope.Resolve<IAuthService>().TrenutniKorisnik();
-            return context.SaveChanges(korisnik?.NormalizedUserName);
+            return context.SaveChanges(korisnik?.UserName);
         }
 
         public bool ImaPravo(string akcija)

@@ -77,7 +77,7 @@ namespace BlazorErp.Services.Implementation
             var securityLevel = new SecurityLevel();
             // dobavi razred ako postoji
             var korisnik = Secure(context.Users.AsQueryable(), securityLevel)
-                            .SingleOrDefault(k => k.NormalizedUserName == korisnickoIme);
+                            .SingleOrDefault(k => k.UserName == korisnickoIme);
 
 			if (korisnik == null)
 				return NotFound();
@@ -147,7 +147,7 @@ namespace BlazorErp.Services.Implementation
 		{
 			// dobavi korisnika ako postoji
 			var korisnik = FilterPoUlogama()
-				.SingleOrDefault(k => k.NormalizedUserName == korisnickoIme);
+				.SingleOrDefault(k => k.UserName == korisnickoIme);
 			if (korisnik == null)
 				return NotFound();
 
@@ -183,7 +183,7 @@ namespace BlazorErp.Services.Implementation
 		{
 			// dobavi korisnika ako postoji
 			var korisnik = context.Users
-				.SingleOrDefault(k => k.NormalizedUserName == korisnickoIme);
+				.SingleOrDefault(k => k.UserName == korisnickoIme);
 			if (korisnik == null)
 				return NotFound();
 
@@ -204,7 +204,7 @@ namespace BlazorErp.Services.Implementation
 		{
 			// dobavi korisnika ako postoji
 			var korisnik = context.Users
-				.SingleOrDefault(k => k.NormalizedUserName == korisnickoIme);
+				.SingleOrDefault(k => k.UserName == korisnickoIme);
 			if (korisnik == null)
 				return NotFound();
 
@@ -241,7 +241,7 @@ namespace BlazorErp.Services.Implementation
             if (!String.IsNullOrWhiteSpace(model.Username))
             {
                 var lowerFilter = model.Username.ToLower();
-                query = query.Where(s => s.NormalizedUserName.ToLower().Contains(lowerFilter));
+                query = query.Where(s => s.UserName.ToLower().Contains(lowerFilter));
             }
             // uradi filtriranje po ulozi
             if (model.UlogaId.HasValue)
@@ -286,7 +286,7 @@ namespace BlazorErp.Services.Implementation
 			model.KorisnickoIme = model.KorisnickoIme.Trim().ToLower();
 
 			//Provjeri da li je korisničko ime zauzeto
-			if (context.Users.FirstOrDefault(x => x.NormalizedUserName == model.KorisnickoIme) != null)
+			if (context.Users.FirstOrDefault(x => x.UserName == model.KorisnickoIme) != null)
 				return Error("Korisničko ime zauzeto.");
 
 			var trenutni = authService.TrenutniKorisnik();
@@ -301,12 +301,13 @@ namespace BlazorErp.Services.Implementation
             var korisnik = new IdentityKorisnik
             {
                 UserName = model.KorisnickoIme,
-                NormalizedUserName = model.KorisnickoIme,
+                NormalizedUserName = model.KorisnickoIme.ToUpper(),
                 Email = model.Email,
                 EmailConfirmed = false,
-                NormalizedEmail = model.Email,                
+                NormalizedEmail = model.Email.ToUpper(),                
                 PunoIme = model.PunoIme,
-                Roles = new List<KorisnikUloga>()
+                Roles = new List<KorisnikUloga>(),
+                SecurityStamp = new Guid().ToString()
             };
 
             var passwordHasher = new PasswordHasher<IdentityKorisnik>();
@@ -314,19 +315,23 @@ namespace BlazorErp.Services.Implementation
             korisnik.PasswordHash = hashed;
             var userStore = new UserStore<IdentityKorisnik, Entities.Models.Korisnik.Uloga, Context, int, IdentityUserClaim<int>, KorisnikUloga, IdentityUserLogin<int>, IdentityUserToken<int>, IdentityRoleClaim<int>>(context);
             await userStore.CreateAsync(korisnik);
+            SaveChanges(context);
 
             foreach (var uloga in model.Uloge)
             {
+                var korisnikUloga = new KorisnikUloga
+                {
+                    RoleId = uloga.VrstaUlogeId,
+                    UserId = korisnik.Id,
+                    KorisnikUlogaDodatnaInformacija = new List<KorisnikUlogaDodatnaInformacija>()
+                };
 
-                var ulogaNaziv = context.Roles.FirstOrDefault(x => x.Id == uloga.VrstaUlogeId)?.NormalizedName;
-
-                await userStore.AddToRoleAsync(korisnik, ulogaNaziv);
+                context.UserRoles.Add(korisnikUloga);
             }
 
-            context.Add(korisnik);
 			SaveChanges(context);
 
-			return VratiKorisnikaPoKorisnickomImenu(korisnik.NormalizedUserName);
+			return VratiKorisnikaPoKorisnickomImenu(korisnik.UserName);
 		}
 
 		
@@ -336,7 +341,7 @@ namespace BlazorErp.Services.Implementation
 
             // dobavi razred ako postoji
             var korisnik = Secure(context.Users.AsQueryable(), securityLevel)
-                            .SingleOrDefault(k => k.NormalizedUserName == korisnickoIme);
+                            .SingleOrDefault(k => k.UserName == korisnickoIme);
             if (korisnik == null)
                 return NotFound();
 

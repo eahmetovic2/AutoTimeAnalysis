@@ -1,0 +1,103 @@
+﻿@page "/korisnici/izmjena/{KorisnickoIme}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using BlazorErp.Shared.Models.Response.Korisnik.Korisnik
+@using BlazorErp.Shared.Models.Response.Korisnik.PravoUpravljanjaKorisnikom
+@using BlazorErp.Shared.Models.Request.Korisnik
+
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+@if (korisnik == null || uloge == null)
+{
+    <ErpPage>
+        <CardBody>
+            <p><em>Loading...</em></p>
+        </CardBody>
+    </ErpPage>
+}
+else
+{
+    <ErpPage Title="Izmjena korisnika" CardTitle="@korisnik.KorisnickoIme">
+        <CardBody>
+            <div style="padding: 24px;">
+                <Text>Ime i prezime</Text>
+                <Input Class="mb-3" @bind-Value="@azuriraniKorisnik.PunoIme" />
+                <Text>Email</Text>
+                <Input Class="mb-3" @bind-Value="@azuriraniKorisnik.Email" />
+                <Text>Lozinka</Text>
+                <Input Class="mb-3" @bind-Value="@azuriraniKorisnik.Lozinka" />
+
+                <Text>Uloga</Text>
+                <MyAutoComplete TItem="PravoUpravljanjaKorisnikomListModelItem" TValue="int" Items="@uloge.Items" @bind-Value="@odabranaUlogaId" ItemText="Uloga" ItemValue="Id" Placeholder="Uloga"></MyAutoComplete>
+
+                <!--<Select Style="display: inline;" Class="mb-4" ShowSearch
+                        Placeholder="Uloga"
+                        FilterOption="FilterOptionValue"
+                        Value="odabranaUloga">
+                    @foreach (var uloga in uloge.Items)
+                    {
+                        <SelectOption Value="@uloga.Id.ToString()">@uloga.Uloga</SelectOption>
+                    }
+                </Select>-->
+
+
+                <Button Class="header-btn" Type="primary" Loading="loading" OnClick="IzmijeniKorisnika">
+                    Spremi
+                </Button>
+            </div>
+        </CardBody>
+    </ErpPage>
+}
+
+
+@using OneOf;
+@code{
+    bool loading = false;
+
+    [Parameter]
+    public string KorisnickoIme { get; set; }
+
+    private KorisnikModel korisnik;
+    private AzurirajKorisnikaRequestModel azuriraniKorisnik;
+    private int odabranaUlogaId;
+    private PravoUpravljanjaKorisnikomListModel uloge;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            korisnik = await Http.GetFromJsonAsync<KorisnikModel>($"korisnici/{KorisnickoIme}");
+            azuriraniKorisnik = new AzurirajKorisnikaRequestModel
+            {
+                Email = korisnik.Email,
+                Lozinka = "",
+                PunoIme = korisnik.PunoIme,
+                Uloge = korisnik.Uloge.Select(x => new DodavanjeUlogeKorisnika
+                {
+                    VrstaUlogeId = x.VrstaUloge.Id
+                }).ToList()
+            };
+            odabranaUlogaId = azuriraniKorisnik.Uloge.FirstOrDefault().VrstaUlogeId;
+            uloge = await Http.GetFromJsonAsync<PravoUpravljanjaKorisnikomListModel>($"korisnici/pravoupravljanjakorisnikom/{korisnik.Uloge.FirstOrDefault().VrstaUloge.Id}");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    private async Task IzmijeniKorisnika()
+    {
+        loading = true;
+        foreach (var uloga in azuriraniKorisnik.Uloge)
+        {
+            uloga.VrstaUlogeId = odabranaUlogaId;
+        }
+        var response = await Http.PutAsJsonAsync<AzurirajKorisnikaRequestModel>($"korisnici/{KorisnickoIme}", azuriraniKorisnik);
+
+
+        Navigation.NavigateTo($"korisnici/{KorisnickoIme}");
+    }
+}

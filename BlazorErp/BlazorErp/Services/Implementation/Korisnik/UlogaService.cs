@@ -48,7 +48,7 @@ namespace BlazorErp.Services.Implementation.Korisnik
 
         public ServiceResult<UlogaListModel> VratiSveZaKorisnickoIme(string korisnickoIme)
         {
-            var uloge = context.UserRoles.Where(a => a.User.NormalizedUserName == korisnickoIme)
+            var uloge = context.UserRoles.Where(a => a.User.UserName == korisnickoIme)
                                           .Select(a => a.Role)
                                           .ToUlogaListModelItem()
                                           .ToList();

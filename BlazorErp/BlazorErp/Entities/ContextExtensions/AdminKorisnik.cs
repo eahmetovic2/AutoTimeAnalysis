@@ -17,12 +17,12 @@ namespace BlazorErp.Entities.ContextExtensions
             //todo ovo je potrebno ponovo implementirati sa dinamickim ulogama
             
 
-            if (!context.Users.Any(x => x.NormalizedUserName == "admin"))
+            if (!context.Users.Any(x => x.UserName == "admin"))
             {
                 var korisnik = new IdentityKorisnik()
                 {
                     UserName = "admin",
-                    NormalizedUserName = "admin",
+                    NormalizedUserName = "ADMIN",
                     Email = "admin@example.ba",
                     PunoIme = "Administrator",
                     SecurityStamp = new Guid().ToString()

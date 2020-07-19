@@ -99,7 +99,7 @@ namespace BlazorErp.Server.Controllers.Sifarnik
                          Core.Constants.LogKategorija.sifarnici,
                          Core.Constants.LogAkcija.sifarnik_dodaj_red,
                          "ESifarnik: " + tipSifarnika ,
-                        authService.TrenutniKorisnik().NormalizedUserName
+                        authService.TrenutniKorisnik().UserName
                          );
                 return Ok();
             }
@@ -118,7 +118,7 @@ namespace BlazorErp.Server.Controllers.Sifarnik
                         Core.Constants.LogKategorija.sifarnici,
                         Core.Constants.LogAkcija.sifarnik_izmijeni_red,
                         "ESifarnik: " + tipSifarnika,
-                       authService.TrenutniKorisnik().NormalizedUserName
+                       authService.TrenutniKorisnik().UserName
                         );
                 return Ok();
             }

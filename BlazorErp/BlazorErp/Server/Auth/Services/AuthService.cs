@@ -47,13 +47,13 @@ namespace BlazorErp.Server.Auth.Services
             {
                 var korisnickoIme = accessor.HttpContext.User.Identity.Name;
                 var korisnik = context.Users
-                              .FirstOrDefault(x => x.NormalizedUserName == korisnickoIme);
+                              .FirstOrDefault(x => x.UserName == korisnickoIme);
 
-                var ulogaClaim = accessor.HttpContext.User.Claims.FirstOrDefault(a => a.Type == "role");
+                var ulogaClaim = accessor.HttpContext.User.Claims.FirstOrDefault(a => a.Type == "ulogaId");
 
                 if (ulogaClaim != null)
                 {
-                    var trenutnaUloga = context.Roles.Where(x => x.Name == ulogaClaim.Value).FirstOrDefault();
+                    var trenutnaUloga = context.Roles.Where(x => x.Id == Convert.ToInt32(ulogaClaim.Value)).FirstOrDefault();
                     korisnik.TrenutnaUlogaId = trenutnaUloga.Id;
 
                     korisnik.TrenutnaUloga = trenutnaUloga;

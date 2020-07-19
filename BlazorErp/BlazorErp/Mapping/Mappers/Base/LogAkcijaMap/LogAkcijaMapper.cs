@@ -17,7 +17,7 @@ namespace BlazorErp.Mapping.Mappers.Base.LogAkcijaMap
                 Akcija = akcija.Akcija.ToString(),
                 Level = akcija.Level.ToString(),
                 Kategorija = akcija.Kategorija.ToString(),
-                KorisnickoIme = akcija.Korisnik.NormalizedUserName,
+                KorisnickoIme = akcija.Korisnik.UserName,
                 DatumAkcije = akcija.DatumAkcije,
                 Opis = akcija.Opis
             });
@@ -31,7 +31,7 @@ namespace BlazorErp.Mapping.Mappers.Base.LogAkcijaMap
                 Akcija = akcija.Akcija.ToString(),
                 Level = akcija.Level.ToString(),
                 Kategorija = akcija.Kategorija.ToString(),
-                KorisnickoIme = akcija.Korisnik.NormalizedUserName,
+                KorisnickoIme = akcija.Korisnik.UserName,
                 DatumAkcije = akcija.DatumAkcije,
                 Opis = akcija.Opis
             });

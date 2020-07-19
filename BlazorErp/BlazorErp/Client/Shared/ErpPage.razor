@@ -12,6 +12,10 @@
         box-shadow: 0 0 2rem 0 rgba(136,152,170,.15);
         border-radius: 6px !important;
     }
+    .erp-page-body {        
+        box-shadow: 0 0 2rem 0 rgba(136,152,170,.15);
+        border-radius: 6px !important;
+    }
 </Styled>
 
 <Row>
@@ -19,16 +23,40 @@
         <Row Class="py-3">
             <h3 class="page-naslov mb-0">@Title</h3>
         </Row>
-        <Card Class="erp-page-body">
-            @ChildContent
-        </Card>
+        @if (CardTitle != "")
+        {
+            <Card BodyStyle="padding: 0;" Title=CardTitle Class="erp-page-body">
+                <Extra>
+                    @HeaderExtra
+                </Extra>
+                <Body>
+                    @CardBody
+                </Body>
+            </Card>
+        }
+        else
+        {
+            <Card BodyStyle="padding: 0;" Class="erp-page-body">
+                <Extra>
+                    @HeaderExtra
+                </Extra>
+                <Body>
+                    @CardBody 
+                </Body>                
+            </Card>
+        }
     </AntDesign.Col>
 </Row>
 
 @code {
     [Parameter]
     public string Title { get; set; }
+    [Parameter]
+    public string CardTitle { get; set; }
 
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment CardBody { get; set; }
+
+    [Parameter]
+    public RenderFragment HeaderExtra { get; set; }
 }

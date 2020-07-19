@@ -42,7 +42,7 @@ namespace BlazorErp.Mapping.Mappers.TokenMap
                 Tip = token.Tip,
                 Vlasnik = token.Vlasnik != null ? new KorisnikTokenModel()
                 {
-                    KorisnickoIme = token.Vlasnik.NormalizedUserName,
+                    KorisnickoIme = token.Vlasnik.UserName,
                     Email = token.Vlasnik.Email,
                     PunoIme = token.Vlasnik.PunoIme,
                     //DatumKreiranja = token.Vlasnik.DatumKreiranja,
@@ -65,7 +65,7 @@ namespace BlazorErp.Mapping.Mappers.TokenMap
                 UlogaId = token.UlogaId,
                 Vlasnik = token.Vlasnik != null ? new KorisnikTokenModel()
                 {
-                    KorisnickoIme = token.Vlasnik.NormalizedUserName,
+                    KorisnickoIme = token.Vlasnik.UserName,
                     Email = token.Vlasnik.Email,
                     PunoIme = token.Vlasnik.PunoIme,
                     //DatumKreiranja = token.Vlasnik.DatumKreiranja,

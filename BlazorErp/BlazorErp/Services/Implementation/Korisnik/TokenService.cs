@@ -48,7 +48,7 @@ namespace BlazorErp.Services.Implementation
 
         public ServiceResult<TokenListModel> VratiTokenePoKorisnickomImenu(String korisnickoIme, ListaTokenaRequestModel model)
         {
-            var korisnikId = context.Users.Where(x => x.NormalizedUserName == korisnickoIme).FirstOrDefault()?.Id;
+            var korisnikId = context.Users.Where(x => x.UserName == korisnickoIme).FirstOrDefault()?.Id;
             // vrati tokene za datog korisnika koji nisu istekli
             var datumIsteka = DateTime.Now;
             var query = context.Tokeni
@@ -77,7 +77,7 @@ namespace BlazorErp.Services.Implementation
 
         public ServiceResult<TokenModel> VratiTokenPoIdu(String korisnickoIme, Guid tokenId)
         {
-            var korisnikId = context.Users.Where(x => x.NormalizedUserName == korisnickoIme).FirstOrDefault()?.Id;
+            var korisnikId = context.Users.Where(x => x.UserName == korisnickoIme).FirstOrDefault()?.Id;
             // dobavi token za korisnika ako postoji
             var token = context.Tokeni
                 .Include(t => t.Vlasnik)
@@ -225,7 +225,7 @@ namespace BlazorErp.Services.Implementation
 
         public ServiceResult<Nothing> ObrisiToken(String korisnickoIme, Guid tokenId)
         {
-            var korisnikId = context.Users.Where(x => x.NormalizedUserName == korisnickoIme).FirstOrDefault()?.Id;
+            var korisnikId = context.Users.Where(x => x.UserName == korisnickoIme).FirstOrDefault()?.Id;
             // dobavi token ako postoji
             var token = context.Tokeni
                 .SingleOrDefault(t =>

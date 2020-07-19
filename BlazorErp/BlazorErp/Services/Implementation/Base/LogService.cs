@@ -67,7 +67,7 @@ namespace BlazorErp.Services.Implementation
 
         public void Akcija(LogLevel level, LogKategorija kategorija, LogAkcija akcija, string opis, string korisnickoIme)
         {
-            var userId = context.Users.Where(x => x.NormalizedUserName == korisnickoIme).FirstOrDefault().Id;
+            var userId = context.Users.Where(x => x.UserName == korisnickoIme).FirstOrDefault().Id;
             context.LogAkcije.Add(new Entities.Models.Base.LogAkcija()
             {
                 Level = level,
@@ -90,7 +90,7 @@ namespace BlazorErp.Services.Implementation
 
             if (!String.IsNullOrWhiteSpace(model.KorisnickoIme))
             {
-                query = query.Where(s => s.Korisnik.NormalizedUserName.Contains(model.KorisnickoIme));
+                query = query.Where(s => s.Korisnik.UserName.Contains(model.KorisnickoIme));
             }
 
             LogLevel level = (LogLevel)model.Level;

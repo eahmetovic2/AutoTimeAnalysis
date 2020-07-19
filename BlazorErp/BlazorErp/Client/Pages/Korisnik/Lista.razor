@@ -5,41 +5,47 @@
 @attribute [Authorize]
 @inject HttpClient Http
 
-<ErpPage Title="Korisnici">
-
-    @if (korisnici == null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else
-    {
-        <Table DataSource="@korisnici.Items">
-            <Column @bind-Field="@context.KorisnickoIme">
-                <NavLink href="@{$"korisnici/{context.KorisnickoIme}"}">
-                    @context.KorisnickoIme
-                </NavLink>
-            </Column>
-            <Column @bind-Field="@context.PunoIme"></Column>
-            <Column @bind-Field="@context.Uloga"></Column>
-            <ActionColumn Title="Acton">
-                <Space Size="middle">
-                    <SpaceItem>
-                        <a>Izmijeni</a>
-                    </SpaceItem>
-                    <SpaceItem>
-                        <a>Delete</a>
-                    </SpaceItem>
-                </Space>
-            </ActionColumn>
-        </Table>
-    }
+<ErpPage Title="Korisnici" CardTitle="Lista korisnika">
+    <HeaderExtra>
+        <Button Class="header-btn" Type="primary">
+            <NavLink href="@{$"korisnici/dodavanje"}">
+                Dodaj
+            </NavLink>
+        </Button>
+    </HeaderExtra>
+    <CardBody>
+        @if (korisnici == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <Table DataSource="@korisnici.Items">
+                <Column @bind-Field="@context.KorisnickoIme">
+                    <NavLink href="@{$"korisnici/{context.KorisnickoIme}"}">
+                        @context.KorisnickoIme
+                    </NavLink>
+                </Column>
+                <Column @bind-Field="@context.PunoIme"></Column>
+                <Column @bind-Field="@context.Uloga"></Column>
+                <ActionColumn Title="Acton">
+                    <Space Size="middle">
+                        <SpaceItem>
+                            <NavLink href="@{$"korisnici/izmjena/{context.KorisnickoIme}"}">
+                                Izmijeni
+                            </NavLink>
+                        </SpaceItem>
+                    </Space>
+                </ActionColumn>
+            </Table>
+        }
+    </CardBody>
 </ErpPage>
 
 
 
 @code {
     private KorisnikListModel korisnici;
-
     protected override async Task OnInitializedAsync()
     {
         try

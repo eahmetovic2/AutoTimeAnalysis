@@ -5,29 +5,60 @@
 @attribute [Authorize]
 @inject HttpClient Http
 
-<ErpPage Title="Pregled korisnika">
-    @if (korisnk == null)
-    {
-        <p><em>Loading...</em></p>
+<style>
+    .header-btn {
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        box-shadow: 0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);
     }
-    else
-    {
-        <span>@korisnk.KorisnickoIme</span>
-    }
-</ErpPage>
+</style>
+
+@if (korisnik == null)
+{
+    <ErpPage>
+        <CardBody>
+            <p><em>Loading...</em></p>
+        </CardBody>
+    </ErpPage>
+}
+else
+{
+    <ErpPage Title="Pregled korisnika" CardTitle="@korisnik.PunoIme">
+        <HeaderExtra>
+            <Button Class="header-btn" Type="primary">
+                <NavLink href="@{$"korisnici/izmjena/{korisnik.KorisnickoIme}"}">
+                    Izmijeni
+                </NavLink>
+            </Button>
+        </HeaderExtra>
+        <CardBody>
+            <div style="padding: 24px;">
+                <PregledStavka Class="pb-3" Title="Korisničko ime" Value="@korisnik.KorisnickoIme" />
+                @foreach (var uloga in korisnik.Uloge)
+                {
+                    <PregledStavka Class="pb-3" Title="Uloga" Value="@uloga.VrstaUloge.Uloga" />
+                }
+
+                <PregledStavka Class="pb-3" Title="Email" Value="@korisnik.Email" />
+            </div>
+        </CardBody>
+    </ErpPage>
+}
 
 
 @code{
     [Parameter]
     public string KorisnickoIme { get; set; }
 
-    private KorisnikModel korisnk;
+    private KorisnikModel korisnik;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            korisnk = await Http.GetFromJsonAsync<KorisnikModel>($"korisnici/{KorisnickoIme}");
+            korisnik = await Http.GetFromJsonAsync<KorisnikModel>($"korisnici/{KorisnickoIme}");
         }
         catch (AccessTokenNotAvailableException exception)
         {

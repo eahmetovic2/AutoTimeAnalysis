@@ -16,7 +16,7 @@ namespace BlazorErp.Mapping.Mappers.LogEntitet
                 DatumAkcije = entitet.DatumAkcije,
                 Entitet = entitet.Entitet.ToString(),
                 EntitetId = entitet.EntitetId,
-                KorisnickoIme = entitet.Korisnik.NormalizedUserName,
+                KorisnickoIme = entitet.Korisnik.UserName,
                 Vrijednost = entitet.Vrijednost
             });
         }
@@ -28,7 +28,7 @@ namespace BlazorErp.Mapping.Mappers.LogEntitet
                 DatumAkcije = entitet.DatumAkcije,
                 Entitet = entitet.Entitet.ToString(),
                 EntitetId = entitet.EntitetId,
-                KorisnickoIme = entitet.Korisnik.NormalizedUserName,
+                KorisnickoIme = entitet.Korisnik.UserName,
                 Vrijednost = entitet.Vrijednost
             });
         }

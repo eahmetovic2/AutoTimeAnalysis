@@ -1,0 +1,73 @@
+﻿@typeparam TItem
+@typeparam TValue
+
+@if (Items != null)
+{
+<Select Style="display: inline;" 
+        ShowSearch
+        Placeholder="@Placeholder"
+        FilterOption="FilterOptionValue"
+        OnChange="OnChange"
+        Value="@ValueString">
+    @foreach (var item in ItemsList)
+    {
+        <SelectOption Value="@item.Value">@item.Text</SelectOption>
+    }
+</Select>
+}
+
+@using OneOf
+@code {
+    class ListItem
+    {
+        public string Value { get; set; }
+        public string Text { get; set; }
+    }
+    private readonly Func<string, SelectOption, bool> FilterOptionValue = FilterOption;
+
+    [Parameter]
+    public ICollection<TItem> Items { get; set; }
+    [Parameter]
+    public string Placeholder { get; set; }
+    [Parameter]
+    public string ItemText { get; set; }
+    [Parameter]
+    public string ItemValue { get; set; }
+    [Parameter]
+    public bool ReturnObject { get; set; } = false;
+    [Parameter]
+    public TValue Value { get; set; }
+    [Parameter]
+    public EventCallback<TValue> ValueChanged { get; set; }
+
+    private List<ListItem> ItemsList { get; set; } = new List<ListItem>();
+    private string ValueString { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ItemsList = Items.Select(x => new ListItem
+        {
+            Value = Helpers.GetPropValue(x, ItemValue).ToString(),
+            Text = Helpers.GetPropValue(x, ItemText).ToString()
+        }).ToList();
+        if(Value != null)
+        {
+            ValueString = Value.ToString();
+        }
+    }
+
+    private static bool FilterOption(string value, SelectOption option)
+    {
+        var optionContent = option.Children.ToUpperInvariant();
+        return optionContent.Contains(value, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void OnChange(OneOf<string, IEnumerable<string>, LabeledValue, IEnumerable<LabeledValue>> value, OneOf<SelectOption, IEnumerable<SelectOption>> option)
+    {
+        Console.WriteLine($"selected: ${value}");
+
+        Value = (TValue)Convert.ChangeType(value.Value, typeof(TValue));
+
+        ValueChanged.InvokeAsync(Value);
+    }
+}

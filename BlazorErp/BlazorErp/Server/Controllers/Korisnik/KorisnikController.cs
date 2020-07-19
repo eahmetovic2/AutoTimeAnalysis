@@ -83,7 +83,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
 						Core.Constants.LogKategorija.korisnik,
 						Core.Constants.LogAkcija.korisnik_izmijeni,
 						"KorisnickoIme: " + result.Value.KorisnickoIme,
-						authService.TrenutniKorisnik().NormalizedUserName
+						authService.TrenutniKorisnik().UserName
 						);
 			}
 			return Convert(result);
@@ -101,7 +101,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
                         Core.Constants.LogKategorija.korisnik,
                         Core.Constants.LogAkcija.korisnik_izmijeni,
                         "KorisnickoIme: " + result.Value.KorisnickoIme,
-                        authService.TrenutniKorisnik().NormalizedUserName
+                        authService.TrenutniKorisnik().UserName
 						);
             }
             return Convert(result);
@@ -146,7 +146,7 @@ namespace BlazorErp.Server.Controllers.Korisnik
 						 Core.Constants.LogKategorija.korisnik,
 						 Core.Constants.LogAkcija.korisnik_dodaj,
 						 "KorisnickoIme: " + result.Value.KorisnickoIme,
-						authService.TrenutniKorisnik().NormalizedUserName
+						authService.TrenutniKorisnik().UserName
 						 );
 
 			}
