@@ -39,12 +39,25 @@
           margin-left: 50px;
         }
         .playBtn {
+          padding: 0;
           color: #28a745;
-          font-size: 24px;
+          font-size: 22px;
+          width: 31px;
+          height: 31px;
         }
         .downloadBtn {
+          padding: 0;
           color: #6c757d;
-          font-size: 24px;
+          font-size: 22px;
+          width: 31px;
+          height: 31px;
+        }
+        .compareBtn {
+          padding: 0;
+          color: #efbe4b;
+          font-size: 22px;
+          width: 31px;
+          height: 31px;
         }
       </style>
     </head>
@@ -64,8 +77,9 @@
               <table class="table mb-4" id="recordingsTable"></table>
             </div>
           </div>
-          <div class="col-9">
-            <h5>Details</h5>     
+<!--Normal View-->
+          <div id="normalView" class="col-9">
+            <h5 id="detailsTitle">Details</h5>     
             <div class="box ">
               <div class="chart-div" class="chart-div">   
                 <canvas id="countBarChart" width="400" height="400"></canvas>
@@ -83,10 +97,31 @@
               <table class="table mb-4" id="eventsTable"></table>
             </div>
           </div>
+<!--/Normal View-->
+
+
+<!--Compare View-->
+          <div id="compareView" class="col-4 offset-1">
+            <h5 id="detailsTitleCompare">Details</h5>     
+            <div class="box ">
+              <div class="chart-div" class="chart-div">   
+                <canvas id="countBarChartCompare" width="400" height="400"></canvas>
+              </div>  
+              <div class="chart-div" class="chart-div">   
+                <canvas id="timePieChartCompare" width="400" height="400"></canvas>
+              </div> 
+              <div class="chart-div" class="chart-div">   
+                <canvas id="averageTimeLineChartCompare" width="400" height="400"></canvas>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <h5>Events:</h5>
+              <table class="table mb-4" id="eventsTableCompare"></table>
+            </div>
+          </div>
+<!--/Compare View-->
         </div>
-
-        
-
       </div>
       
 

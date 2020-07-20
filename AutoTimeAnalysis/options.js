@@ -1,4 +1,9 @@
 
+let normalView = document.getElementById('normalView');
+let compareView = document.getElementById('compareView');
+let detailsTitle = document.getElementById('detailsTitle');
+let detailsTitleCompare = document.getElementById('detailsTitleCompare');
+
 
 let eventsTable = document.getElementById('eventsTable');
 var countBarChart = document.getElementById('countBarChart').getContext('2d');
@@ -9,6 +14,15 @@ var countBarChartVar = null;
 var averageTimeLineChartVar = null;
 var timePieChartVar = null;
 
+compareView.style = "display: none;";
+let eventsTableCompare = document.getElementById('eventsTableCompare');
+var countBarChartCompare = document.getElementById('countBarChartCompare').getContext('2d');
+var averageTimeLineChartCompare = document.getElementById('averageTimeLineChartCompare').getContext('2d');
+var timePieChartCompare = document.getElementById('timePieChartCompare').getContext('2d');
+
+var countBarChartCompareVar = null;
+var averageTimeLineChartCompareVar = null;
+var timePieChartCompareVar = null;
 
 /* let page = document.getElementById('buttonDiv');
 const kButtonColors = ['#3aa757', '#e8453c', '#f9bb2d', '#4688f1'];
@@ -63,6 +77,7 @@ function displayRecordings(allRecordings) {
 
     //Play button
     let tableDataActions = document.createElement('td');
+    tableDataActions.className = "row";
     let playButton = document.createElement('button');
     //playButton.style.backgroundImage = "url('images/play-solid45.png')";
     //playButton.className = "record";
@@ -73,6 +88,10 @@ function displayRecordings(allRecordings) {
 
     playButton.addEventListener('click', function() {
       PlayRecording(item);
+      
+      compareView.style = "display: none;";
+      normalView.className = 'col-9';
+      detailsTitle.innerHTML = "Details";
     });
 
 
@@ -89,8 +108,36 @@ function displayRecordings(allRecordings) {
       DownloadRecording(item);
     });
 
+    
+
+
+    //Compare button
+    let compareButton = document.createElement('INPUT');
+    compareButton.setAttribute("type", "file");
+    compareButton.setAttribute("accept", ".json");
+    compareButton.style = "width: 100px;";
+    //compareButton.setAttribute("class", "btn compareBtn");    
+    //let compareButtonIcon = document.createElement('i');
+    //compareButtonIcon.setAttribute("class", "fas fa-compress-alt");
+    //compareButton.appendChild(compareButtonIcon);
+
+    compareButton.onchange = function(e) {
+      const reader = new FileReader();
+      reader.addEventListener('load', (event) => {
+        var res = JSON.parse(event.target.result);
+        CompareRecording(item, res);
+        detailsTitleCompare.innerHTML = "Details " + compareButton.files[0].name;
+      });
+      reader.readAsText(compareButton.files[0]);
+      
+      compareView.style = "display: inline;";
+      normalView.className = 'col-4';
+      detailsTitle.innerHTML = "Details " + item.name;
+    };
+
     tableDataActions.appendChild(playButton);
     tableDataActions.appendChild(downloadButton);
+    tableDataActions.appendChild(compareButton);
 
     tableRow.appendChild(tableDataActions);
 
@@ -242,7 +289,7 @@ function PlayRecording(recording) {
     tableRow.appendChild(tableDataTime);
 
     let tableDataDuration = document.createElement('td');
-    tableDataDuration.innerHTML = item.duration + ' ms';
+    tableDataDuration.innerHTML = item.duration.toFixed(3) + ' ms';
     tableRow.appendChild(tableDataDuration);
 
     eventsTable.appendChild(tableRow);
@@ -264,4 +311,97 @@ function DownloadRecording(item) {
   element.click();
 
   document.body.removeChild(element);
+}
+
+
+
+function CompareRecording(recording, compared) {
+  PlayRecording(recording);
+
+  compared.items.forEach(item => {
+    item.datetime = new Date(item.time);
+  });
+  var groupedEvents = groupBy(compared.items, "event");
+  var barChartData = [];
+  groupedEvents.result.forEach(element => {
+    barChartData.push(element.items.length);
+  });
+
+  //Clear charts
+  if(countBarChartCompareVar != null) 
+    countBarChartCompareVar.destroy();
+  if(averageTimeLineChartCompareVar != null) 
+    averageTimeLineChartCompareVar.destroy();
+  if(timePieChartCompareVar != null) 
+    timePieChartCompareVar.destroy();
+
+  countBarChartCompareVar = addChart('bar', countBarChartCompare, '# of Events', groupedEvents.values, barChartData);
+
+
+  var averageTimeLineChartData = [];
+  groupedEvents.result.forEach(element => {
+    var averageTime = 0;
+    element.items.forEach(event => {
+      averageTime += event.duration;
+    });
+    averageTimeLineChartData.push(averageTime / element.items.length);
+  });
+  averageTimeLineChartCompareVar = addChart('line', averageTimeLineChartCompare, 'Average Time of Events', groupedEvents.values, averageTimeLineChartData);
+
+  var timePieChartData = [];
+  groupedEvents.result.forEach(element => {
+    var duration = 0;
+    element.items.forEach(event => {
+      duration += event.duration;
+    });
+    timePieChartData.push(duration);
+  });
+  timePieChartCompareVar = addChart('pie', timePieChartCompare, 'Duration of Events', groupedEvents.values, timePieChartData);
+
+  eventsTableCompare.innerHTML = '';
+  let headerRow = document.createElement('tr');
+  let headerItem = document.createElement('td');
+  headerItem.innerHTML = "Type";
+  let headertarget = document.createElement('td');
+  headertarget.innerHTML = "Target";
+  let headertargetId = document.createElement('td');
+  headertargetId.innerHTML = "Target ID";
+  let headerTime = document.createElement('td');
+  headerTime.innerHTML = "Time";
+  let headerDuration = document.createElement('td');
+  headerDuration.innerHTML = "Duration";
+  headerRow.appendChild(headerItem);
+  headerRow.appendChild(headertarget);
+  headerRow.appendChild(headertargetId);
+  headerRow.appendChild(headerTime);
+  headerRow.appendChild(headerDuration);
+  eventsTableCompare.appendChild(headerRow);
+
+  var index = 1;
+  for (let item of compared.items) {
+    let tableRow = document.createElement('tr');
+
+    let tableDataEvent = document.createElement('td');
+    tableDataEvent.innerHTML = index + '. ' + item.event;
+    tableRow.appendChild(tableDataEvent);
+
+    let tableDataTarget = document.createElement('td');
+    tableDataTarget.innerHTML = item.target;
+    tableRow.appendChild(tableDataTarget);
+
+    let tableDataTargetId = document.createElement('td');
+    tableDataTargetId.innerHTML = item.targetId;
+    tableRow.appendChild(tableDataTargetId);
+
+    let tableDataTime = document.createElement('td');
+    tableDataTime.innerHTML = item.time;
+    tableRow.appendChild(tableDataTime);
+
+    let tableDataDuration = document.createElement('td');
+    tableDataDuration.innerHTML = item.duration.toFixed(3) + ' ms';
+    tableRow.appendChild(tableDataDuration);
+
+    eventsTableCompare.appendChild(tableRow);
+    index++;
+  }
 }
