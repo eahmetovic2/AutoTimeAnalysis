@@ -16,4 +16,6 @@ AutoTimeAnalysis is a Chrome Extension that allows users to store and analyse a 
 * Click on the Play button in the list All recordings for a detailed report
 ![alt text](https://github.com/eahmetovic2/BlazorErp/blob/master/AutoTimeAnalysis/usage/ReportExample.jpg)
 * Click on the Download button in the list All recordings to download a json file with the recording data
+* To compare a recording with a previous one click on the Choose File button in the list All recordings and upload a previous recording. The detailed reports of both recordings are then displayed next to each other for easier comparing
+![alt text](https://github.com/eahmetovic2/BlazorErp/blob/master/AutoTimeAnalysis/usage/CompareExample.jpg)
 * Analyse the generated reports
