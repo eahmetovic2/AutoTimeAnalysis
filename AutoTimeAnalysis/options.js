@@ -92,6 +92,7 @@ function displayRecordings(allRecordings) {
       compareView.style = "display: none;";
       normalView.className = 'col-9';
       detailsTitle.innerHTML = "Details";
+      compareButton.files = new FileList();
     });
 
 
